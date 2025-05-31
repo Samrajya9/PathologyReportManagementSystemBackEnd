@@ -1,9 +1,14 @@
-// import { IsUUID } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsNotEmpty, IsNumber } from 'class-validator';
 
 export class CreateTestCategoryMapDto {
-  //   @IsUUID()
-  testId: string;
+  @IsNotEmpty()
+  @IsNumber()
+  @Type(() => Number)
+  testId: number;
 
-  //   @IsUUID()
-  categoryId: string;
+  @IsNotEmpty()
+  @Type(() => Number)
+  @IsNumber()
+  categoryId: number;
 }

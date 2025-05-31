@@ -42,7 +42,7 @@ export class TestService {
     const test = await this.testRepo.save(newTest);
     const testCategoryMap = createTestDto.categoryIds.map((categoryId) => {
       return this.createTestCategoryMap({
-        testId: String(test.id),
+        testId: test.id,
         categoryId,
       });
     });
@@ -122,11 +122,9 @@ export class TestService {
         where: { test: { id: updatedTest.id } },
         relations: { category: true },
       });
-      const currentCategoryIds = currentMapping.map((m) =>
-        m.category.id.toString(),
-      );
+      const currentCategoryIds = currentMapping.map((m) => m.category.id);
       //[1,2,3]
-      const newCategoryIds = categoryIds.map((id) => id.toString());
+      const newCategoryIds = categoryIds.map((id) => id);
       //[2,3,4]
 
       const categoriesChanged =
@@ -135,7 +133,7 @@ export class TestService {
         !newCategoryIds.every((id) => currentCategoryIds.includes(id));
       if (categoriesChanged) {
         const toRemove = currentMapping.filter(
-          (m) => !newCategoryIds.includes(m.category.id.toString()),
+          (m) => !newCategoryIds.includes(m.category.id),
         );
         const toAdd = newCategoryIds.filter(
           (id) => !currentCategoryIds.includes(id),
@@ -147,7 +145,7 @@ export class TestService {
           ),
           ...toAdd.map((categoryId) =>
             this.createTestCategoryMap({
-              testId: String(updatedTest.id),
+              testId: updatedTest.id,
               categoryId,
             }),
           ),
@@ -267,13 +265,10 @@ export class TestService {
   async createTestCategoryMap(
     createTestCategoryMapDto: CreateTestCategoryMapDto,
   ) {
-    const test = await this.findOneTest(
-      parseInt(createTestCategoryMapDto.testId),
-    );
+    const { testId, categoryId } = createTestCategoryMapDto;
+    const test = await this.findOneTest(testId);
 
-    const category = await this.findOneTestCategory(
-      parseInt(createTestCategoryMapDto.categoryId),
-    );
+    const category = await this.findOneTestCategory(categoryId);
 
     const newTestCategoryMap = this.testCategoryMapRepo.create({
       test,

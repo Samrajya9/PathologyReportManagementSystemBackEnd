@@ -1,4 +1,7 @@
+import { IsNotEmpty, IsString } from 'class-validator';
+
 export class CreateTestUnitDto {
-  //   @IsString()
+  @IsNotEmpty()
+  @IsString()
   name: string;
 }
