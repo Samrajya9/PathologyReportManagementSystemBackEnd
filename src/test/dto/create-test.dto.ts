@@ -1,15 +1,9 @@
-import { GlobalEntityIdDataType } from 'src/global/entity/BaseEntity';
-
 export class CreateTestDto {
-  //   @IsString()
   name: string;
-
-  //   @IsUUID()
+  price: number;
   testUnitId: string;
-
-  //   @IsUUID()
   testTypeId: string;
-
-  //   @IsUUID({}, { each: true })
   categoryIds: string[];
+  normalRangeMin: number;
+  normalRangeMax: number;
 }

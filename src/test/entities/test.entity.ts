@@ -9,14 +9,22 @@ export class TestEntity extends GlobalBaseEntity {
   @Column()
   name: string;
 
+  @Column()
+  price: number;
+
   @ManyToOne(() => TestUnitEntity)
   @JoinColumn({ name: 'test_unit_id' })
   testUnit: TestUnitEntity;
 
   @ManyToOne(() => TestTypeEntity)
   @JoinColumn({ name: 'test_type_id' })
-  tesType: TestTypeEntity;
+  testType: TestTypeEntity;
 
   @OneToMany(() => TestCategoryMapEntity, (map) => map.test)
   categoryMappings: TestCategoryMapEntity[];
+
+  @Column({ name: 'normal_range_min', nullable: true })
+  normalRangeMin: number;
+  @Column({ name: 'normal_range_max', nullable: true })
+  normalRangeMax: number;
 }

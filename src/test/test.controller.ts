@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { TestService } from './test.service';
 import { CreateTestDto } from './dto/create-test.dto';
@@ -45,7 +46,7 @@ export class TestController {
 
   @Delete('/units/:id')
   removeTestUnit(@Param('id', ParseIntPipe) id: GlobalEntityIdDataType) {
-    return this.testService.remove(id);
+    return this.testService.removeTestUnit(id);
   }
 
   //Tests Type Controllers
@@ -104,27 +105,26 @@ export class TestController {
   // Tests Controllers
   @Post()
   create(@Body() createTestDto: CreateTestDto) {
-    return this.testService.create(createTestDto);
+    return this.testService.createTest(createTestDto);
   }
 
   @Get()
-  findAll() {
-    return this.testService.findAll();
+  findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
+    return this.testService.findAllTest(Number(page), Number(limit));
   }
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    console.log(id);
-    return this.testService.findOne(+id);
+    return this.testService.findOneTest(+id);
   }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTestDto: UpdateTestDto) {
-    return this.testService.update(+id, updateTestDto);
+    return this.testService.updateTest(+id, updateTestDto);
   }
 
   @Delete(':id')
   remove(@Param('id') id: string) {
-    return this.testService.remove(+id);
+    return this.testService.removeTest(+id);
   }
 }

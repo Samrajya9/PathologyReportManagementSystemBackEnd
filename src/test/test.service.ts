@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { CreateTestDto } from './dto/create-test.dto';
 import { UpdateTestDto } from './dto/update-test.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { TestEntity } from './entities/test.entity';
 import { TestUnitEntity } from './entities/test.unit.entity';
 import { TestTypeEntity } from './entities/test.type.entity';
@@ -30,8 +30,15 @@ export class TestService {
   ) {}
 
   // Test Services
-  async create(createTestDto: CreateTestDto) {
+  async createTest(createTestDto: CreateTestDto) {
+    const [testType, testUnit] = await Promise.all([
+      this.findOneTestType(Number(createTestDto.testTypeId)),
+      this.findOneTestUnit(Number(createTestDto.testUnitId)),
+    ]);
     const newTest = this.testRepo.create(createTestDto);
+    newTest.testType = testType;
+    newTest.testUnit = testUnit;
+
     const test = await this.testRepo.save(newTest);
     const testCategoryMap = createTestDto.categoryIds.map((categoryId) => {
       return this.createTestCategoryMap({
@@ -40,21 +47,47 @@ export class TestService {
       });
     });
     await Promise.all(testCategoryMap);
-    return test;
+    return await this.findOneTest(test.id);
   }
 
-  findAll() {
-    return this.testRepo.find({
+  async findAllTest(page?: number, limit?: number) {
+    const options: FindManyOptions = {
       relations: {
         testUnit: true,
-        tesType: true,
+        testType: true,
+        categoryMappings: {
+          category: true,
+        },
       },
-    });
+    };
+    if (page !== undefined && limit !== undefined) {
+      // Add pagination when both parameters are provided
+      options['skip'] = (page - 1) * limit;
+      options['take'] = limit;
+      const [data, total] = await this.testRepo.findAndCount(options);
+      return {
+        data,
+        meta: {
+          total,
+          page,
+          limit,
+          totalPages: Math.ceil(total / limit),
+        },
+      };
+    }
+    return this.testRepo.find(options);
   }
 
-  async findOne(id: number) {
+  async findOneTest(id: number) {
     const test = await this.testRepo.findOne({
       where: { id },
+      relations: {
+        testUnit: true,
+        testType: true,
+        categoryMappings: {
+          category: true,
+        },
+      },
     });
     if (!test) {
       throw new Error('Test not found');
@@ -62,12 +95,72 @@ export class TestService {
     return test;
   }
 
-  update(id: number, updateTestDto: UpdateTestDto) {
-    return `This action updates a #${id} test`;
+  async updateTest(id: number, updateTestDto: UpdateTestDto) {
+    const {
+      name,
+      price,
+      testTypeId,
+      testUnitId,
+      normalRangeMin,
+      normalRangeMax,
+      categoryIds,
+    } = updateTestDto;
+
+    const test = await this.findOneTest(id);
+    this.testRepo.merge(test, {
+      name,
+      price,
+      normalRangeMin,
+      normalRangeMax,
+      testType: { id: Number(testTypeId) },
+      testUnit: { id: Number(testUnitId) },
+    });
+    const updatedTest = await this.testRepo.save(test);
+
+    if (categoryIds && categoryIds.length > 0) {
+      const currentMapping = await this.testCategoryMapRepo.find({
+        where: { test: { id: updatedTest.id } },
+        relations: { category: true },
+      });
+      const currentCategoryIds = currentMapping.map((m) =>
+        m.category.id.toString(),
+      );
+      //[1,2,3]
+      const newCategoryIds = categoryIds.map((id) => id.toString());
+      //[2,3,4]
+
+      const categoriesChanged =
+        currentCategoryIds.length !== newCategoryIds.length ||
+        !currentCategoryIds.every((id) => newCategoryIds.includes(id)) ||
+        !newCategoryIds.every((id) => currentCategoryIds.includes(id));
+      if (categoriesChanged) {
+        const toRemove = currentMapping.filter(
+          (m) => !newCategoryIds.includes(m.category.id.toString()),
+        );
+        const toAdd = newCategoryIds.filter(
+          (id) => !currentCategoryIds.includes(id),
+        );
+
+        await Promise.all([
+          ...toRemove.map((mapping) =>
+            this.testCategoryMapRepo.remove(mapping),
+          ),
+          ...toAdd.map((categoryId) =>
+            this.createTestCategoryMap({
+              testId: String(updatedTest.id),
+              categoryId,
+            }),
+          ),
+        ]);
+      }
+    }
+
+    return await this.findOneTest(updatedTest.id);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} test`;
+  async removeTest(id: number) {
+    const tests = await this.findOneTest(id);
+    return this.testRepo.remove(tests);
   }
 
   // TestUnit Services
@@ -174,13 +267,9 @@ export class TestService {
   async createTestCategoryMap(
     createTestCategoryMapDto: CreateTestCategoryMapDto,
   ) {
-    // const test = await this.testRepo.findOne({
-    //   where: { id: parseInt(createTestCategoryMapDto.testId) },
-    // });
-    // const category = await this.testCategoryRepo.findOne({
-    //   where: { id: parseInt(createTestCategoryMapDto.categoryId) },
-    // });
-    const test = await this.findOne(parseInt(createTestCategoryMapDto.testId));
+    const test = await this.findOneTest(
+      parseInt(createTestCategoryMapDto.testId),
+    );
 
     const category = await this.findOneTestCategory(
       parseInt(createTestCategoryMapDto.categoryId),
@@ -191,5 +280,18 @@ export class TestService {
       category,
     });
     return await this.testCategoryMapRepo.save(newTestCategoryMap);
+  }
+  async removeAllTestCategoryMapForGivenTestId(testId: GlobalEntityIdDataType) {
+    return await this.testCategoryMapRepo.delete({ test: { id: testId } });
+  }
+
+  async reomveOneTestCategoryMap(
+    testId: GlobalEntityIdDataType,
+    categoryId: GlobalEntityIdDataType,
+  ) {
+    return await this.testCategoryMapRepo.delete({
+      test: { id: testId },
+      category: { id: categoryId },
+    });
   }
 }

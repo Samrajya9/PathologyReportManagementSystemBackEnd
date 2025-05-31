@@ -6,6 +6,7 @@ import { GlobalBaseEntity } from 'src/global/entity/BaseEntity';
 export class TestCategoryEntity extends GlobalBaseEntity {
   @Column()
   name: string;
+
   @OneToMany(() => TestCategoryMapEntity, (map) => map.category)
   testMappings: TestCategoryMapEntity[];
 }

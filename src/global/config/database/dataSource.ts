@@ -23,7 +23,6 @@ export class DataSourceConfig {
 const configService = new ConfigService({ load: [DatabaseConfig] });
 const dataSourceConfig = new DataSourceConfig(configService);
 const options = dataSourceConfig.getDataSourceOptions();
-console.log(options);
 const dataSource = new DataSource(options);
 
 export default dataSource;
