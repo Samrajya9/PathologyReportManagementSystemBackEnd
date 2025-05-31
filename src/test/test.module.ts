@@ -7,6 +7,10 @@ import { TestUnitEntity } from './entities/test.unit.entity';
 import { TestTypeEntity } from './entities/test.type.entity';
 import { TestCategoryEntity } from './entities/test.category.entity';
 import { TestCategoryMapEntity } from './entities/test.category.map.entity';
+import { TestTypeModule } from './test-type/test-type.module';
+import { TestCategoryModule } from './test-category/test-category.module';
+import { TestUnitModule } from './test-unit/test-unit.module';
+import { TestCategoryMappingModule } from './test-category-mapping/test-category-mapping.module';
 
 @Module({
   imports: [
@@ -17,6 +21,10 @@ import { TestCategoryMapEntity } from './entities/test.category.map.entity';
       TestCategoryEntity,
       TestCategoryMapEntity,
     ]),
+    TestTypeModule,
+    TestCategoryModule,
+    TestUnitModule,
+    TestCategoryMappingModule,
   ],
   controllers: [TestController],
   providers: [TestService],

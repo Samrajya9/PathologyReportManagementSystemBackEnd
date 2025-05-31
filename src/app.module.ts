@@ -6,6 +6,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseConfig } from './global/config';
 import { DataSourceOptions } from 'typeorm';
 import { TestModule } from './test/test.module';
+import { TestModule } from './type/test/test/test.module';
+import { TestModule } from './type/test/test.module';
+import { TestModule } from './test-type/test/test.module';
+import { TestModule } from './type/test/test.module';
 
 @Module({
   imports: [
