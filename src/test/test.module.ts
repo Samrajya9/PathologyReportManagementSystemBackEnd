@@ -1,32 +1,26 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TestService } from './test.service';
 import { TestController } from './test.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TestEntity } from './entities/test.entity';
-import { TestUnitEntity } from './entities/test.unit.entity';
-import { TestTypeEntity } from './entities/test.type.entity';
-import { TestCategoryEntity } from './entities/test.category.entity';
-import { TestCategoryMapEntity } from './entities/test.category.map.entity';
-import { TestTypeModule } from './test-type/test-type.module';
-import { TestCategoryModule } from './test-category/test-category.module';
-import { TestUnitModule } from './test-unit/test-unit.module';
-import { TestCategoryMappingModule } from './test-category-mapping/test-category-mapping.module';
+import { TestUnitModule } from './modules/test-unit/test-unit.module';
+import { TestTypeModule } from './modules/test-type/test-type.module';
+import { TestCategoryModule } from './modules/test-category/test-category.module';
+import { TestCategoryMapModule } from './modules/test-category-map/test-category-map.module';
+import { TestUnitController } from './modules/test-unit/test-unit.controller';
+import { TestFallbackModule } from './modules/test-fallback/test-fallback.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([
-      TestEntity,
-      TestUnitEntity,
-      TestTypeEntity,
-      TestCategoryEntity,
-      TestCategoryMapEntity,
-    ]),
+    TypeOrmModule.forFeature([TestEntity]),
+    TestUnitModule,
     TestTypeModule,
     TestCategoryModule,
-    TestUnitModule,
-    TestCategoryMappingModule,
+    forwardRef(() => TestCategoryMapModule),
+    forwardRef(() => TestFallbackModule),
   ],
   controllers: [TestController],
   providers: [TestService],
+  exports: [TestService],
 })
 export class TestModule {}

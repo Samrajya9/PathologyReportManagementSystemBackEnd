@@ -1,9 +1,9 @@
 import { Entity, PrimaryGeneratedColumn } from 'typeorm';
 
-export type GlobalEntityIdDataType = number;
+export type AppBaseEntityIdDataType = number;
 
 @Entity()
-export class GlobalBaseEntity {
+export class AppBaseEntity {
   @PrimaryGeneratedColumn()
-  id: GlobalEntityIdDataType;
+  id: AppBaseEntityIdDataType;
 }

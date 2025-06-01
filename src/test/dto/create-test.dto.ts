@@ -2,9 +2,31 @@ import { Type } from 'class-transformer';
 import {
   IsNotEmpty,
   IsNumber,
+  IsNumberString,
+  IsOptional,
   IsString,
+  Validate,
+  ValidateIf,
   ValidateNested,
+  ValidationArguments,
+  ValidatorConstraint,
+  ValidatorConstraintInterface,
 } from 'class-validator';
+
+@ValidatorConstraint({ name: 'MaxGreaterThanMin', async: false })
+export class MaxGreaterThanMinValidator
+  implements ValidatorConstraintInterface
+{
+  validate(max: string, args: ValidationArguments) {
+    const min = args.object[args.constraints[0]];
+    if (!min || !max) return true;
+    return parseFloat(max) > parseFloat(min);
+  }
+
+  defaultMessage(args: ValidationArguments) {
+    return 'Maximum range must be greater than minimum range';
+  }
+}
 
 export class CreateTestDto {
   @IsNotEmpty()
@@ -31,13 +53,23 @@ export class CreateTestDto {
   @ValidateNested({ each: true })
   categoryIds: number[];
 
-  @IsNotEmpty()
-  @IsNumber()
-  @Type(() => Number)
-  normalRangeMin: number;
+  @IsOptional()
+  @IsNumberString(
+    {},
+    {
+      message: 'normalRangeMin must be a number string',
+    },
+  )
+  normalRangeMin?: string;
 
-  @IsNotEmpty()
-  @IsNumber()
-  @Type(() => Number)
-  normalRangeMax: number;
+  @IsOptional()
+  @IsNumberString(
+    {},
+    {
+      message: 'normalRangeMax must be a number string',
+    },
+  )
+  @ValidateIf((o) => o.normalRangeMin !== undefined)
+  @Validate(MaxGreaterThanMinValidator, ['normalRangeMin'])
+  normalRangeMax?: string;
 }
