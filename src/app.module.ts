@@ -6,11 +6,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DatabaseConfig } from './global/config';
 import { DataSourceOptions } from 'typeorm';
 import { TestModule } from './test/test.module';
-import { RouterModule } from '@nestjs/core';
+import { APP_INTERCEPTOR, RouterModule } from '@nestjs/core';
 import { TestUnitModule } from './test/modules/test-unit/test-unit.module';
 import { TestTypeModule } from './test/modules/test-type/test-type.module';
 import { TestCategoryModule } from './test/modules/test-category/test-category.module';
 import { TestFallbackModule } from './test/modules/test-fallback/test-fallback.module';
+import { AppInterceptors } from './global/interceptors';
 
 @Module({
   imports: [
@@ -36,16 +37,22 @@ import { TestFallbackModule } from './test/modules/test-fallback/test-fallback.m
       {
         path: 'tests',
         children: [
-          { path: '/', module: TestModule },
           { path: 'units', module: TestUnitModule },
           { path: 'types', module: TestTypeModule },
           { path: 'categories', module: TestCategoryModule },
+          { path: '/', module: TestModule },
           { path: '/', module: TestFallbackModule },
         ],
       },
     ]),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_INTERCEPTOR,
+      useClass: AppInterceptors,
+    },
+  ],
 })
 export class AppModule {}

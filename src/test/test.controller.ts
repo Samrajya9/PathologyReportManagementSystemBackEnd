@@ -8,6 +8,7 @@ import {
   Param,
   Delete,
   Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { TestService } from './test.service';
 import { CreateTestDto } from './dto/create-test.dto';
@@ -25,11 +26,14 @@ export class TestController {
 
   @Get()
   findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
-    return this.testService.findAllTest(Number(page), Number(limit));
+    const pageNumber = page ? Number(page) : 1;
+    const limitNumber = limit ? Number(limit) : 5;
+    return this.testService.findAllTest(pageNumber, limitNumber);
   }
 
   // @Get(':id')
-  // findOne(@Param('id', ParseIntPipe) id: number) {
+  // findOne(@Param('id') id: number) {
+  //   console.log('Inside TestController ');
   //   return this.testService.findOne(id);
   // }
 
