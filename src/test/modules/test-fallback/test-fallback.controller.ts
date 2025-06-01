@@ -12,8 +12,6 @@ export class TestFallbackController {
 
   @Get(':id')
   getTestById(@Param('id') id: string) {
-    console.log('Inside TestFallbackController ');
-
     return this.testService.findOne(+id);
   }
 }

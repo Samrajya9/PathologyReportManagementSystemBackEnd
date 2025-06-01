@@ -29,15 +29,13 @@ export class AppInterceptors implements NestInterceptor {
       `Incoming Request:`,
       `Class: ${className}`,
       `Handler: ${handlerName}`,
-      `Method: ${method} url`,
+      `Method: ${method}`,
       `IP: ${ip}`,
       `User-Agent: ${userAgent}`,
       `Body: ${JSON.stringify(requestBody)}`,
-      files ? `Files: ${JSON.stringify(this.sanitizeFiles(files))}` : '',
+      `Files: ${JSON.stringify(this.sanitizeFiles(files))}`,
       ``,
-    ]
-      .filter(Boolean)
-      .join('\n');
+    ].join('\n');
     logger.verbose(logMessage);
 
     // Intercept the request here
