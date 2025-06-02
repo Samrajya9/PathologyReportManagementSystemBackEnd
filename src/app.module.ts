@@ -1,4 +1,4 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -12,6 +12,8 @@ import { TestTypeModule } from './test/modules/test-type/test-type.module';
 import { TestCategoryModule } from './test/modules/test-category/test-category.module';
 import { TestFallbackModule } from './test/modules/test-fallback/test-fallback.module';
 import { AppInterceptors } from './global/interceptors';
+import { CacheModule } from '@nestjs/cache-manager';
+import { createKeyv } from '@keyv/redis';
 
 @Module({
   imports: [
@@ -45,6 +47,14 @@ import { AppInterceptors } from './global/interceptors';
         ],
       },
     ]),
+
+    CacheModule.registerAsync({
+      useFactory: async () => {
+        return {
+          stores: [createKeyv('redis://localhost:6379/0')],
+        };
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [
@@ -53,6 +63,10 @@ import { AppInterceptors } from './global/interceptors';
       provide: APP_INTERCEPTOR,
       useClass: AppInterceptors,
     },
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: CacheInterceptor,
+    // },
   ],
 })
 export class AppModule {}

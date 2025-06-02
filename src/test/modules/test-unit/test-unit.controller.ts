@@ -7,11 +7,13 @@ import {
   Patch,
   Param,
   Delete,
+  UseInterceptors,
 } from '@nestjs/common';
 import { TestUnitService } from './test-unit.service';
 import { CreateTesUnitDto } from './dto/create-tes-unit.dto';
 import { UpdateTesUnitDto } from './dto/update-tes-unit.dto';
-
+import { CacheInterceptor, CacheKey } from '@nestjs/cache-manager';
+// @UseInterceptors(CacheInterceptor)
 @Controller()
 export class TestUnitController {
   constructor(private readonly testUnitService: TestUnitService) {}
@@ -21,10 +23,10 @@ export class TestUnitController {
     return this.testUnitService.create(createTesUnitDto);
   }
 
-  //http://localhost:3000/tests/units
-
   @Get()
+  @CacheKey('custom_units_key')
   findAll() {
+    console.log('Inside TestUnitController');
     return this.testUnitService.findAll();
   }
 
