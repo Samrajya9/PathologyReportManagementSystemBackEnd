@@ -12,6 +12,7 @@ import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
 import { createKeyv } from '@keyv/redis';
 import { MedicalDepartmentsModule } from './medical_departments/medical_departments.module';
 import { AppRoutes } from './global/routes/routes';
+import { PanelsModule } from './panels/panels.module';
 
 @Module({
   imports: [
@@ -43,6 +44,7 @@ import { AppRoutes } from './global/routes/routes';
     }),
     TestModule,
     MedicalDepartmentsModule,
+    PanelsModule,
   ],
   controllers: [AppController],
   providers: [
