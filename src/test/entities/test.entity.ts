@@ -2,8 +2,8 @@ import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
 import { AppBaseEntity } from 'src/global/entity/BaseEntity';
 import { TestUnitEntity } from '../modules/test-unit/entities/tes-unit.entity';
-import { TestTypeEntity } from '../modules/test-type/entities/test-type.entity';
 import { TestCategoryMapEntity } from '../modules/test-category-map/entities/test-category-map.entity';
+import { MedicalDepartmentEntity } from 'src/medical_departments/entities/medical_department.entity';
 
 @Entity({ name: 'tests' })
 export class TestEntity extends AppBaseEntity {
@@ -21,8 +21,8 @@ export class TestEntity extends AppBaseEntity {
   @ManyToOne(() => TestUnitEntity)
   testUnit: TestUnitEntity;
 
-  @ManyToOne(() => TestTypeEntity)
-  testType: TestTypeEntity;
+  @ManyToOne(() => MedicalDepartmentEntity)
+  medicalDepartment: MedicalDepartmentEntity;
 
   @OneToMany(() => TestCategoryMapEntity, (map) => map.test)
   categoryMappings: TestCategoryMapEntity[];

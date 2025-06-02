@@ -45,12 +45,11 @@ export class CreateTestDto {
   @IsNotEmpty()
   @IsNumber()
   @Type(() => Number)
-  testTypeId: number;
+  medicalDepartmentId: number;
 
   @IsNotEmpty()
-  @IsNumber()
+  @IsNumber({}, { each: true })
   @Type(() => Number)
-  @ValidateNested({ each: true })
   categoryIds: number[];
 
   @IsOptional()

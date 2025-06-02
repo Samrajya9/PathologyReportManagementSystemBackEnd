@@ -9,29 +9,34 @@ import { UpdateTestDto } from './dto/update-test.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, Repository } from 'typeorm';
 import { TestEntity } from './entities/test.entity';
-import { TestTypeService } from './modules/test-type/test-type.service';
 import { TestUnitService } from './modules/test-unit/test-unit.service';
 import { TestCategoryMapService } from './modules/test-category-map/test-category-map.service';
 import { AppBaseEntityIdDataType } from 'src/global/entity/BaseEntity';
+import { MedicalDepartmentsService } from 'src/medical_departments/medical_departments.service';
 
 @Injectable()
 export class TestService {
   constructor(
     @InjectRepository(TestEntity)
     private readonly testRepo: Repository<TestEntity>,
-    private readonly testTypeService: TestTypeService,
     private readonly testUnitService: TestUnitService,
+    private readonly medicalDepartmentsService: MedicalDepartmentsService,
     @Inject(forwardRef(() => TestCategoryMapService))
     private readonly testCategoryMapService: TestCategoryMapService,
   ) {}
 
   async createTest(createTestDto: CreateTestDto) {
-    const { testTypeId, testUnitId, categoryIds, ...data } = createTestDto;
-    const [testType, testUnit] = await Promise.all([
-      this.testTypeService.findOne(testTypeId),
+    const { medicalDepartmentId, testUnitId, categoryIds, ...data } =
+      createTestDto;
+    const [medicalDepartment, testUnit] = await Promise.all([
+      this.medicalDepartmentsService.findOne(medicalDepartmentId),
       this.testUnitService.findOne(testUnitId),
     ]);
-    const newTest = this.testRepo.create({ testType, testUnit, ...data });
+    const newTest = this.testRepo.create({
+      medicalDepartment,
+      testUnit,
+      ...data,
+    });
 
     const test = await this.testRepo.save(newTest);
     const testCategoryMap = createTestDto.categoryIds.map((categoryId) => {
@@ -48,7 +53,7 @@ export class TestService {
     const options: FindManyOptions = {
       relations: {
         testUnit: true,
-        testType: true,
+        medicalDepartment: true,
         categoryMappings: {
           category: true,
         },
@@ -75,13 +80,13 @@ export class TestService {
   async findOne(id: AppBaseEntityIdDataType) {
     const test = await this.testRepo.findOne({
       where: { id },
-      // relations: {
-      //   testUnit: true,
-      //   testType: true,
-      //   categoryMappings: {
-      //     category: true,
-      //   },
-      // },
+      relations: {
+        testUnit: true,
+        medicalDepartment: true,
+        categoryMappings: {
+          category: true,
+        },
+      },
     });
     if (!test) {
       throw new NotFoundException(`Test with ID ${id} not found`);
@@ -93,7 +98,7 @@ export class TestService {
     const {
       name,
       price,
-      testTypeId,
+      medicalDepartmentId,
       testUnitId,
       normalRangeMin,
       normalRangeMax,
@@ -106,7 +111,9 @@ export class TestService {
       price,
       normalRangeMin,
       normalRangeMax,
-      testType: testTypeId ? { id: testTypeId } : undefined,
+      medicalDepartment: medicalDepartmentId
+        ? { id: medicalDepartmentId }
+        : undefined,
       testUnit: testUnitId ? { id: testUnitId } : undefined,
     });
     const updatedTest = await this.testRepo.save(test);
