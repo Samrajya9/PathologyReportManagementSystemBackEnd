@@ -34,8 +34,8 @@ export class CreateTestDto {
   name: string;
 
   @IsNotEmpty()
-  @IsNumber()
-  price: number;
+  @IsNumberString()
+  price: string;
 
   @IsNotEmpty()
   @IsNumber()

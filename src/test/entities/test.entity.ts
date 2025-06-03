@@ -10,8 +10,8 @@ export class TestEntity extends AppBaseEntity {
   @Column()
   name: string;
 
-  @Column()
-  price: number;
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  price: string;
 
   @Column({ type: 'decimal', name: 'normal_range_min', nullable: true })
   normalRangeMin: string;

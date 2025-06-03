@@ -6,5 +6,6 @@ export class CreateMedicalDepartmentDto {
   name: string;
 
   @IsOptional()
-  description: string;
+  @IsString()
+  description?: string;
 }
