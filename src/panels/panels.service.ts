@@ -1,10 +1,16 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  forwardRef,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreatePanelDto } from './dto/create-panel.dto';
 import { UpdatePanelDto } from './dto/update-panel.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PanelEntity } from './entities/panel.entity';
 import { Repository } from 'typeorm';
 import { MedicalDepartmentsService } from 'src/medical_departments/medical_departments.service';
+import { PanelTestsService } from './modules/panel_tests/panel_tests.service';
 
 @Injectable()
 export class PanelsService {
@@ -12,9 +18,12 @@ export class PanelsService {
     @InjectRepository(PanelEntity)
     private readonly panelRepo: Repository<PanelEntity>,
     private readonly medicalDepartmentService: MedicalDepartmentsService,
+    @Inject(forwardRef(() => PanelTestsService))
+    private readonly panelTesstService: PanelTestsService,
   ) {}
+
   async create(createPanelDto: CreatePanelDto) {
-    const { medicalDepartmentId, price, ...data } = createPanelDto;
+    const { medicalDepartmentId, testId, price, ...data } = createPanelDto;
     const department =
       await this.medicalDepartmentService.findOne(medicalDepartmentId);
     const newPanel = this.panelRepo.create({
@@ -22,7 +31,16 @@ export class PanelsService {
       price: parseFloat(price).toFixed(2).toString(),
       medicalDepartment: department,
     });
-    return await this.panelRepo.save(newPanel);
+    const panel = await this.panelRepo.save(newPanel);
+    await Promise.all(
+      testId.map((id) =>
+        this.panelTesstService.create({ panelId: panel.id, testId: id }),
+      ),
+    );
+    const panelTests = await this.panelTesstService.findAllTestByPanelId(
+      panel.id,
+    );
+    return { ...panel, tests: panelTests };
   }
 
   async findAll() {
@@ -34,7 +52,8 @@ export class PanelsService {
     if (!panel) {
       throw new NotFoundException(`Panel with ID ${id} not found`);
     }
-    return panel;
+    const tests = await this.panelTesstService.findAllTestByPanelId(panel.id);
+    return { ...panel, tests };
   }
 
   async update(id: number, updatePanelDto: UpdatePanelDto) {

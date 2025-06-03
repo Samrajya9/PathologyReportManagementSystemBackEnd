@@ -7,8 +7,6 @@ export class TestCategoryEntity extends AppBaseEntity {
   @Column()
   name: string;
 
-  @OneToMany(() => TestCategoryMapEntity, (map) => map.category, {
-    eager: false,
-  })
+  @OneToMany(() => TestCategoryMapEntity, (map) => map.category)
   testMappings: TestCategoryMapEntity[];
 }

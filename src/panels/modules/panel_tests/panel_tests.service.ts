@@ -1,15 +1,46 @@
-import { Injectable } from '@nestjs/common';
+import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import { CreatePanelTestDto } from './dto/create-panel_test.dto';
 import { UpdatePanelTestDto } from './dto/update-panel_test.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { PanelTestEntity } from './entities/panel_test.entity';
+import { Repository } from 'typeorm';
+import { TestService } from 'src/test/test.service';
+import { PanelsService } from 'src/panels/panels.service';
+import { AppBaseEntityIdDataType } from 'src/global/entity/BaseEntity';
 
 @Injectable()
 export class PanelTestsService {
-  create(createPanelTestDto: CreatePanelTestDto) {
-    return 'This action adds a new panelTest';
+  constructor(
+    @InjectRepository(PanelTestEntity)
+    private readonly panelTestRepo: Repository<PanelTestEntity>,
+    private readonly testService: TestService,
+    @Inject(forwardRef(() => PanelsService))
+    private readonly panelsService: PanelsService,
+  ) {}
+  async create(createPanelTestDto: CreatePanelTestDto) {
+    const { panelId, testId, ...data } = createPanelTestDto;
+    const panel = await this.panelsService.findOne(panelId);
+    const test = await this.testService.findOne(testId);
+    const newPanelTest = this.panelTestRepo.create({ ...data, panel, test });
+    const panelTest = await this.panelTestRepo.save(newPanelTest);
+    return panelTest;
   }
-
   findAll() {
     return `This action returns all panelTests`;
+  }
+
+  async findAllTestByPanelId(panelId: AppBaseEntityIdDataType) {
+    const panelTests = await this.panelTestRepo.find({
+      where: { panel: { id: panelId } },
+      relations: ['test'],
+    });
+
+    const tests = await Promise.all(
+      panelTests.map((panel) => this.testService.findOne(panel.test.id)),
+    );
+    console.log('test', tests);
+
+    return tests;
   }
 
   findOne(id: number) {

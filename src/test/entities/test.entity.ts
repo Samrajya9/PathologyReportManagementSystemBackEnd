@@ -18,10 +18,10 @@ export class TestEntity extends AppBaseEntity {
   @Column({ type: 'decimal', name: 'normal_range_max', nullable: true })
   normalRangeMax: string;
 
-  @ManyToOne(() => TestUnitEntity)
+  @ManyToOne(() => TestUnitEntity, { eager: true })
   testUnit: TestUnitEntity;
 
-  @ManyToOne(() => MedicalDepartmentEntity)
+  @ManyToOne(() => MedicalDepartmentEntity, { eager: true })
   medicalDepartment: MedicalDepartmentEntity;
 
   @OneToMany(() => TestCategoryMapEntity, (map) => map.test)

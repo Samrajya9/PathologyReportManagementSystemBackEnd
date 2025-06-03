@@ -53,10 +53,10 @@ import { PanelsModule } from './panels/panels.module';
       provide: APP_INTERCEPTOR,
       useClass: AppInterceptors,
     },
-    {
-      provide: APP_INTERCEPTOR,
-      useClass: CacheInterceptor,
-    },
+    // {
+    //   provide: APP_INTERCEPTOR,
+    //   useClass: CacheInterceptor,
+    // },
   ],
 })
 export class AppModule {}

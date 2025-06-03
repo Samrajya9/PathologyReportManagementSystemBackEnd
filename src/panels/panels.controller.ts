@@ -11,7 +11,7 @@ import { PanelsService } from './panels.service';
 import { CreatePanelDto } from './dto/create-panel.dto';
 import { UpdatePanelDto } from './dto/update-panel.dto';
 
-@Controller('panels')
+@Controller('')
 export class PanelsController {
   constructor(private readonly panelsService: PanelsService) {}
 

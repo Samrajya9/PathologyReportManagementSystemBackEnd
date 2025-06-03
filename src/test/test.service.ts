@@ -37,23 +37,21 @@ export class TestService {
       testUnit,
       ...data,
     });
-
     const test = await this.testRepo.save(newTest);
-    const testCategoryMap = createTestDto.categoryIds.map((categoryId) => {
-      return this.testCategoryMapService.create({
-        testId: test.id,
-        categoryId,
-      });
-    });
-    await Promise.all(testCategoryMap);
+    await Promise.all(
+      createTestDto.categoryIds.map((categoryId) => {
+        return this.testCategoryMapService.create({
+          testId: test.id,
+          categoryId,
+        });
+      }),
+    );
     return await this.findOne(test.id);
   }
 
   async findAllTest(page?: number, limit?: number) {
     const options: FindManyOptions = {
       relations: {
-        testUnit: true,
-        medicalDepartment: true,
         categoryMappings: {
           category: true,
         },
@@ -78,20 +76,17 @@ export class TestService {
   }
 
   async findOne(id: AppBaseEntityIdDataType) {
+    const testDetails =
+      await this.testCategoryMapService.findAllCategoryForTestByTestId(id);
     const test = await this.testRepo.findOne({
       where: { id },
-      relations: {
-        testUnit: true,
-        medicalDepartment: true,
-        categoryMappings: {
-          category: true,
-        },
-      },
     });
     if (!test) {
       throw new NotFoundException(`Test with ID ${id} not found`);
     }
-    return test;
+    const testCaegories =
+      await this.testCategoryMapService.findAllCategoryForTestByTestId(test.id);
+    return { ...test, testCaegories };
   }
 
   async updateTest(id: AppBaseEntityIdDataType, updateTestDto: UpdateTestDto) {
@@ -119,9 +114,10 @@ export class TestService {
     const updatedTest = await this.testRepo.save(test);
 
     if (categoryIds && categoryIds.length > 0) {
-      const currentMapping = await this.testCategoryMapService.findAllByTestId(
-        updatedTest.id,
-      );
+      const currentMapping =
+        await this.testCategoryMapService.findAllCategoryForTestByTestId(
+          updatedTest.id,
+        );
       const currentCategoryIds = currentMapping.map((m) => m.category.id);
       //[1,2,3]
       const newCategoryIds = categoryIds;
@@ -152,7 +148,6 @@ export class TestService {
         ]);
       }
     }
-
     return await this.findOne(updatedTest.id);
   }
 
@@ -165,7 +160,7 @@ export class TestService {
     newCategoryIds: AppBaseEntityIdDataType[],
   ) {
     const currentMapping =
-      await this.testCategoryMapService.findAllByTestId(testId);
+      await this.testCategoryMapService.findAllCategoryForTestByTestId(testId);
     const currentCategoryIds = currentMapping.map((m) => m.category.id);
     const categoriesChanged =
       currentCategoryIds.length !== newCategoryIds.length ||
@@ -192,6 +187,8 @@ export class TestService {
         ),
       ]);
     }
-    return await this.testCategoryMapService.findAllByTestId(testId);
+    return await this.testCategoryMapService.findAllCategoryForTestByTestId(
+      testId,
+    );
   }
 }

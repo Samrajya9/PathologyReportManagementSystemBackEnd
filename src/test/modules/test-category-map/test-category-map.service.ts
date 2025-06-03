@@ -34,7 +34,7 @@ export class TestCategoryMapService {
     return await this.testCategoryMapRepo.find();
   }
 
-  async findAllByTestId(testId: AppBaseEntityIdDataType) {
+  async findAllCategoryForTestByTestId(testId: AppBaseEntityIdDataType) {
     return await this.testCategoryMapRepo.find({
       where: { test: { id: testId } },
       relations: { category: true },

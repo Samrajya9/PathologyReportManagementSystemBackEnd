@@ -37,4 +37,9 @@ export class CreatePanelDto {
   @IsNumber()
   @IsNotEmpty()
   medicalDepartmentId: number;
+
+  @IsNumber({}, { each: true })
+  @IsNotEmpty()
+  @Type(() => Number)
+  testId: number[];
 }
