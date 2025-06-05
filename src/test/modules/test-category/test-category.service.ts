@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTestCategoryDto } from './dto/create-test-category.dto';
 import { UpdateTestCategoryDto } from './dto/update-test-category.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -27,7 +27,7 @@ export class TestCategoryService {
       where: { id },
     });
     if (!testCategory) {
-      throw new Error(`Test category with ${id} not found`);
+      throw new NotFoundException(`Test category with id ${id} not found`);
     }
     return testCategory;
   }

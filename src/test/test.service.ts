@@ -13,6 +13,7 @@ import { TestUnitService } from './modules/test-unit/test-unit.service';
 import { TestCategoryMapService } from './modules/test-category-map/test-category-map.service';
 import { AppBaseEntityIdDataType } from 'src/global/entity/BaseEntity';
 import { MedicalDepartmentsService } from 'src/medical_departments/medical_departments.service';
+import { ReferenceRangesService } from './modules/reference_ranges/reference_ranges.service';
 
 @Injectable()
 export class TestService {
@@ -23,11 +24,18 @@ export class TestService {
     private readonly medicalDepartmentsService: MedicalDepartmentsService,
     @Inject(forwardRef(() => TestCategoryMapService))
     private readonly testCategoryMapService: TestCategoryMapService,
+    @Inject(forwardRef(() => ReferenceRangesService))
+    private readonly refRangeService: ReferenceRangesService,
   ) {}
 
   async createTest(createTestDto: CreateTestDto) {
-    const { medicalDepartmentId, testUnitId, categoryIds, ...data } =
-      createTestDto;
+    const {
+      medicalDepartmentId,
+      testUnitId,
+      categoryIds,
+      referenceRanges,
+      ...data
+    } = createTestDto;
     const [medicalDepartment, testUnit] = await Promise.all([
       this.medicalDepartmentsService.findOne(medicalDepartmentId),
       this.testUnitService.findOne(testUnitId),
@@ -38,23 +46,30 @@ export class TestService {
       ...data,
     });
     const test = await this.testRepo.save(newTest);
-    await Promise.all(
-      createTestDto.categoryIds.map((categoryId) => {
+    await Promise.all([
+      ...createTestDto.categoryIds.map((categoryId) => {
         return this.testCategoryMapService.create({
           testId: test.id,
           categoryId,
         });
       }),
-    );
+      ...referenceRanges.map((refRange) => {
+        return this.refRangeService.create(refRange, test);
+      }),
+    ]);
     return await this.findOne(test.id);
   }
 
   async findAllTest(page?: number, limit?: number) {
     const options: FindManyOptions = {
       relations: {
+        referenceRanges: true,
         categoryMappings: {
           category: true,
         },
+      },
+      order: {
+        id: 'DESC',
       },
     };
     if (page !== undefined && limit !== undefined) {
@@ -80,12 +95,16 @@ export class TestService {
       await this.testCategoryMapService.findAllCategoryForTestByTestId(id);
     const test = await this.testRepo.findOne({
       where: { id },
+      relations: {
+        referenceRanges: true,
+      },
     });
     if (!test) {
       throw new NotFoundException(`Test with ID ${id} not found`);
     }
     const testCaegories =
       await this.testCategoryMapService.findAllCategoryForTestByTestId(test.id);
+    // const reference_range = await this.refRangeService.findByTestId(test.id);
     return { ...test, testCaegories };
   }
 

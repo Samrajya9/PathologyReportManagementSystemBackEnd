@@ -1,5 +1,8 @@
 import { Type } from 'class-transformer';
 import {
+  IsArray,
+  IsDefined,
+  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsNumberString,
@@ -12,6 +15,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
+import { CreateReferenceRangeDtoWithoutTestId } from '../modules/reference_ranges/dto/create-reference_range.dto';
 
 @ValidatorConstraint({ name: 'MaxGreaterThanMin', async: false })
 export class MaxGreaterThanMinValidator
@@ -71,4 +75,10 @@ export class CreateTestDto {
   @ValidateIf((o) => o.normalRangeMin !== undefined)
   @Validate(MaxGreaterThanMinValidator, ['normalRangeMin'])
   normalRangeMax?: string;
+
+  @IsArray()
+  @ValidateNested({ each: true })
+  @IsDefined({ message: 'referenceRanges is required' }) // 👈 Force presence
+  @Type(() => CreateReferenceRangeDtoWithoutTestId)
+  referenceRanges: CreateReferenceRangeDtoWithoutTestId[];
 }

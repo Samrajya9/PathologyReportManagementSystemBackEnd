@@ -8,6 +8,7 @@ import { TestCategoryModule } from './modules/test-category/test-category.module
 import { TestCategoryMapModule } from './modules/test-category-map/test-category-map.module';
 import { TestFallbackModule } from './modules/test-fallback/test-fallback.module';
 import { MedicalDepartmentsModule } from 'src/medical_departments/medical_departments.module';
+import { ReferenceRangesModule } from './modules/reference_ranges/reference_ranges.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { MedicalDepartmentsModule } from 'src/medical_departments/medical_depart
     TestCategoryModule,
     forwardRef(() => TestCategoryMapModule),
     forwardRef(() => TestFallbackModule),
+    forwardRef(() => ReferenceRangesModule),
   ],
   controllers: [TestController],
   providers: [TestService],
