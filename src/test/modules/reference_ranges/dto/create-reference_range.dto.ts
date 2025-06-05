@@ -1,6 +1,7 @@
 import {
   IsEnum,
   IsNotEmpty,
+  IsNumber,
   IsNumberString,
   IsOptional,
   IsString,
@@ -22,7 +23,7 @@ export class CreateReferenceRangeDto {
   age_max_years: string;
 
   @IsOptional()
-  @IsEnum(Gender)
+  @IsEnum(Gender, { message: 'Gender must be one of: male, female, other' })
   gender: string;
 
   @IsNumberString()
@@ -49,4 +50,8 @@ export class CreateReferenceRangeDto {
 export class CreateReferenceRangeDtoWithoutTestId extends OmitType(
   CreateReferenceRangeDto,
   ['testId'] as const,
-) {}
+) {
+  @IsOptional()
+  @IsNumber()
+  id?: number;
+}

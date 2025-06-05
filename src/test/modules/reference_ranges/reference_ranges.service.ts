@@ -53,12 +53,16 @@ export class ReferenceRangesService {
     return refRange;
   }
 
-  async update(id: number, updateReferenceRangeDto: UpdateReferenceRangeDto) {
+  async update(
+    id: number,
+    test: TestEntity,
+    updateReferenceRangeDto: UpdateReferenceRangeDto,
+  ) {
     const refRange = await this.findOne(id);
-    const updateRefRang = this.refRangeRepo.merge(
-      refRange,
-      updateReferenceRangeDto,
-    );
+    const updateRefRang = this.refRangeRepo.merge(refRange, {
+      ...updateReferenceRangeDto,
+      test,
+    });
     return await this.refRangeRepo.save(updateRefRang);
   }
 

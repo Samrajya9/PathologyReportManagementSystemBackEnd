@@ -117,6 +117,7 @@ export class TestService {
       normalRangeMin,
       normalRangeMax,
       categoryIds,
+      referenceRanges,
     } = updateTestDto;
 
     const test = await this.findOne(id);
@@ -138,10 +139,7 @@ export class TestService {
           updatedTest.id,
         );
       const currentCategoryIds = currentMapping.map((m) => m.category.id);
-      //[1,2,3]
       const newCategoryIds = categoryIds;
-      //[2,3,4]
-
       const categoriesChanged =
         currentCategoryIds.length !== newCategoryIds.length ||
         !currentCategoryIds.every((id) => newCategoryIds.includes(id)) ||
@@ -166,6 +164,32 @@ export class TestService {
           ),
         ]);
       }
+    }
+    if (referenceRanges) {
+      // Reference Range Dto's Id (it contain id of ref Range from dto )
+      const dtoRangeIds = referenceRanges
+        .map((r) => r.id)
+        .filter((id): id is number => id !== undefined);
+
+      const existingRanges = await this.refRangeService.findByTestId(
+        updatedTest.id,
+      );
+
+      const existingRangeMap = new Map(existingRanges.map((r) => [r.id, r]));
+
+      const toDelete = existingRanges.filter(
+        (r) => !dtoRangeIds.includes(r.id),
+      );
+      await Promise.all([
+        ...referenceRanges.map(async (dto) => {
+          if (dto.id && existingRangeMap.has(dto.id)) {
+            await this.refRangeService.update(dto.id, updatedTest, dto);
+          } else {
+            await this.refRangeService.create(dto, updatedTest);
+          }
+        }),
+        ...toDelete.map((r) => this.refRangeService.remove(r.id)),
+      ]);
     }
     return await this.findOne(updatedTest.id);
   }

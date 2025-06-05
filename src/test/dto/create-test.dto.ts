@@ -51,8 +51,8 @@ export class CreateTestDto {
   @Type(() => Number)
   medicalDepartmentId: number;
 
-  @IsNotEmpty()
-  @IsNumber({}, { each: true })
+  @IsNotEmpty({ each: true, message: 'Each categoryId is required' })
+  @IsNumber({}, { each: true, message: 'Each categoryId must be a number' })
   @Type(() => Number)
   categoryIds: number[];
 
