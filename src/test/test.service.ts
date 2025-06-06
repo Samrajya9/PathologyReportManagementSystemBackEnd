@@ -14,6 +14,7 @@ import { TestCategoryMapService } from './modules/test-category-map/test-categor
 import { AppBaseEntityIdDataType } from 'src/global/entity/BaseEntity';
 import { MedicalDepartmentsService } from 'src/medical_departments/medical_departments.service';
 import { ReferenceRangesService } from './modules/reference_ranges/reference_ranges.service';
+import { SpecimensService } from 'src/specimens/specimens.service';
 
 @Injectable()
 export class TestService {
@@ -26,6 +27,7 @@ export class TestService {
     private readonly testCategoryMapService: TestCategoryMapService,
     @Inject(forwardRef(() => ReferenceRangesService))
     private readonly refRangeService: ReferenceRangesService,
+    private readonly specimensService: SpecimensService,
   ) {}
 
   async createTest(createTestDto: CreateTestDto) {
@@ -34,15 +36,18 @@ export class TestService {
       testUnitId,
       categoryIds,
       referenceRanges,
+      specimenId,
       ...data
     } = createTestDto;
-    const [medicalDepartment, testUnit] = await Promise.all([
+    const [medicalDepartment, testUnit, Specimen] = await Promise.all([
       this.medicalDepartmentsService.findOne(medicalDepartmentId),
       this.testUnitService.findOne(testUnitId),
+      this.specimensService.findOne(specimenId),
     ]);
     const newTest = this.testRepo.create({
       medicalDepartment,
       testUnit,
+      specimens: Specimen,
       ...data,
     });
     const test = await this.testRepo.save(newTest);
@@ -114,8 +119,6 @@ export class TestService {
       price,
       medicalDepartmentId,
       testUnitId,
-      normalRangeMin,
-      normalRangeMax,
       categoryIds,
       referenceRanges,
     } = updateTestDto;
@@ -124,8 +127,6 @@ export class TestService {
     this.testRepo.merge(test, {
       name,
       price,
-      normalRangeMin,
-      normalRangeMax,
       medicalDepartment: medicalDepartmentId
         ? { id: medicalDepartmentId }
         : undefined,

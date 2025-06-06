@@ -13,6 +13,7 @@ import { createKeyv } from '@keyv/redis';
 import { MedicalDepartmentsModule } from './medical_departments/medical_departments.module';
 import { AppRoutes } from './global/routes/routes';
 import { PanelsModule } from './panels/panels.module';
+import { SpecimensModule } from './specimens/specimens.module';
 
 @Module({
   imports: [
@@ -45,6 +46,7 @@ import { PanelsModule } from './panels/panels.module';
     TestModule,
     MedicalDepartmentsModule,
     PanelsModule,
+    SpecimensModule,
   ],
   controllers: [AppController],
   providers: [

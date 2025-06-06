@@ -9,6 +9,7 @@ import { TestCategoryMapModule } from './modules/test-category-map/test-category
 import { TestFallbackModule } from './modules/test-fallback/test-fallback.module';
 import { MedicalDepartmentsModule } from 'src/medical_departments/medical_departments.module';
 import { ReferenceRangesModule } from './modules/reference_ranges/reference_ranges.module';
+import { SpecimensModule } from 'src/specimens/specimens.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { ReferenceRangesModule } from './modules/reference_ranges/reference_rang
     forwardRef(() => TestCategoryMapModule),
     forwardRef(() => TestFallbackModule),
     forwardRef(() => ReferenceRangesModule),
+    SpecimensModule,
   ],
   controllers: [TestController],
   providers: [TestService],

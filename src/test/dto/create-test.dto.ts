@@ -2,35 +2,14 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsDefined,
-  IsEnum,
   IsNotEmpty,
   IsNumber,
   IsNumberString,
-  IsOptional,
   IsString,
-  Validate,
-  ValidateIf,
   ValidateNested,
-  ValidationArguments,
-  ValidatorConstraint,
-  ValidatorConstraintInterface,
 } from 'class-validator';
 import { CreateReferenceRangeDtoWithoutTestId } from '../modules/reference_ranges/dto/create-reference_range.dto';
-
-@ValidatorConstraint({ name: 'MaxGreaterThanMin', async: false })
-export class MaxGreaterThanMinValidator
-  implements ValidatorConstraintInterface
-{
-  validate(max: string, args: ValidationArguments) {
-    const min = args.object[args.constraints[0]];
-    if (!min || !max) return true;
-    return parseFloat(max) > parseFloat(min);
-  }
-
-  defaultMessage(args: ValidationArguments) {
-    return 'Maximum range must be greater than minimum range';
-  }
-}
+import { AppBaseEntityIdDataType } from 'src/global/entity/BaseEntity';
 
 export class CreateTestDto {
   @IsNotEmpty()
@@ -44,37 +23,22 @@ export class CreateTestDto {
   @IsNotEmpty()
   @IsNumber()
   @Type(() => Number)
-  testUnitId: number;
+  testUnitId: AppBaseEntityIdDataType;
 
   @IsNotEmpty()
   @IsNumber()
   @Type(() => Number)
-  medicalDepartmentId: number;
+  specimenId: AppBaseEntityIdDataType;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @Type(() => Number)
+  medicalDepartmentId: AppBaseEntityIdDataType;
 
   @IsNotEmpty({ each: true, message: 'Each categoryId is required' })
   @IsNumber({}, { each: true, message: 'Each categoryId must be a number' })
   @Type(() => Number)
-  categoryIds: number[];
-
-  @IsOptional()
-  @IsNumberString(
-    {},
-    {
-      message: 'normalRangeMin must be a number string',
-    },
-  )
-  normalRangeMin?: string;
-
-  @IsOptional()
-  @IsNumberString(
-    {},
-    {
-      message: 'normalRangeMax must be a number string',
-    },
-  )
-  @ValidateIf((o) => o.normalRangeMin !== undefined)
-  @Validate(MaxGreaterThanMinValidator, ['normalRangeMin'])
-  normalRangeMax?: string;
+  categoryIds: AppBaseEntityIdDataType[];
 
   @IsArray()
   @ValidateNested({ each: true })
