@@ -3,7 +3,7 @@ import { Column, Entity } from 'typeorm';
 
 @Entity({ name: 'specimens' })
 export class SpecimenEntity extends AppBaseEntity {
-  @Column()
+  @Column({ unique: true })
   name: string;
   @Column({ type: 'text' })
   storage: string;

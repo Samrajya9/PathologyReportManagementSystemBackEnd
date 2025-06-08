@@ -66,8 +66,6 @@ export class AppInterceptors implements NestInterceptor {
         sanitized[field] = '***REDACTED***';
       }
     });
-    console.log(sanitized);
-
     return sanitized;
   }
 
