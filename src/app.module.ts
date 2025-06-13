@@ -15,6 +15,7 @@ import { AppRoutes } from './global/routes/routes';
 import { PanelsModule } from './panels/panels.module';
 import { SpecimensModule } from './specimens/specimens.module';
 import { ApplicationExceptionFilters } from './global/ExceptionFilters';
+import { ContainerModule } from './container/container.module';
 
 @Module({
   imports: [
@@ -48,6 +49,7 @@ import { ApplicationExceptionFilters } from './global/ExceptionFilters';
     MedicalDepartmentsModule,
     PanelsModule,
     SpecimensModule,
+    ContainerModule,
   ],
   controllers: [AppController],
   providers: [
