@@ -10,6 +10,8 @@ import { TestFallbackModule } from './modules/test-fallback/test-fallback.module
 import { MedicalDepartmentsModule } from 'src/medical_departments/medical_departments.module';
 import { ReferenceRangesModule } from './modules/reference_ranges/reference_ranges.module';
 import { SpecimensModule } from 'src/specimens/specimens.module';
+import { ResultValueOptionsModule } from './modules/result_value_options/result_value_options.module';
+import { ResultValueTypesModule } from './modules/result_value_types/result_value_types.module';
 
 @Module({
   imports: [
@@ -21,6 +23,8 @@ import { SpecimensModule } from 'src/specimens/specimens.module';
     forwardRef(() => TestFallbackModule),
     forwardRef(() => ReferenceRangesModule),
     SpecimensModule,
+    ResultValueOptionsModule,
+    ResultValueTypesModule,
   ],
   controllers: [TestController],
   providers: [TestService],

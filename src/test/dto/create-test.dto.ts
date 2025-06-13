@@ -35,6 +35,11 @@ export class CreateTestDto {
   @Type(() => Number)
   medicalDepartmentId: AppBaseEntityIdDataType;
 
+  @IsNotEmpty()
+  @IsNumber()
+  @Type(() => Number)
+  resultValueTypeId: AppBaseEntityIdDataType;
+
   @IsNotEmpty({ each: true, message: 'Each categoryId is required' })
   @IsNumber({}, { each: true, message: 'Each categoryId must be a number' })
   @Type(() => Number)

@@ -5,6 +5,8 @@ import { TestCategoryMapEntity } from '../modules/test-category-map/entities/tes
 import { MedicalDepartmentEntity } from 'src/medical_departments/entities/medical_department.entity';
 import { ReferenceRangeEntity } from '../modules/reference_ranges/entities/reference_range.entity';
 import { SpecimenEntity } from 'src/specimens/entities/specimen.entity';
+import { ResultValueOptionEntity } from '../modules/result_value_options/entities/result_value_option.entity';
+import { ResultValueTypeEntity } from '../modules/result_value_types/entities/result_value_type.entity';
 
 @Entity({ name: 'tests' })
 export class TestEntity extends AppBaseEntity {
@@ -28,4 +30,12 @@ export class TestEntity extends AppBaseEntity {
 
   @ManyToOne(() => SpecimenEntity, { eager: true })
   specimens: SpecimenEntity;
+
+  @ManyToOne(() => ResultValueTypeEntity, { eager: true })
+  resultValueType: ResultValueTypeEntity;
+
+  @OneToMany(() => ResultValueOptionEntity, (rvo) => rvo.test, {
+    eager: true,
+  })
+  resultValueOptions: ResultValueOptionEntity[];
 }
