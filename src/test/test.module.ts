@@ -12,6 +12,8 @@ import { ReferenceRangesModule } from './modules/reference_ranges/reference_rang
 import { SpecimensModule } from 'src/specimens/specimens.module';
 import { ResultValueOptionsModule } from './modules/result_value_options/result_value_options.module';
 import { ResultValueTypesModule } from './modules/result_value_types/result_value_types.module';
+import { TestSpecimenContainerModule } from './modules/test_specimen_container/test_specimen_container.module';
+import { ContainerModule } from 'src/container/container.module';
 
 @Module({
   imports: [
@@ -25,6 +27,8 @@ import { ResultValueTypesModule } from './modules/result_value_types/result_valu
     SpecimensModule,
     ResultValueOptionsModule,
     ResultValueTypesModule,
+    TestSpecimenContainerModule,
+    ContainerModule,
   ],
   controllers: [TestController],
   providers: [TestService],

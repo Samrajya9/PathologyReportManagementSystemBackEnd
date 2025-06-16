@@ -16,6 +16,8 @@ import { MedicalDepartmentsService } from 'src/medical_departments/medical_depar
 import { ReferenceRangesService } from './modules/reference_ranges/reference_ranges.service';
 import { SpecimensService } from 'src/specimens/specimens.service';
 import { ResultValueTypesService } from './modules/result_value_types/result_value_types.service';
+import { ContainerService } from 'src/container/container.service';
+import { TestSpecimenContainerService } from './modules/test_specimen_container/test_specimen_container.service';
 
 @Injectable()
 export class TestService {
@@ -30,6 +32,8 @@ export class TestService {
     private readonly refRangeService: ReferenceRangesService,
     private readonly specimensService: SpecimensService,
     private readonly resultValueTypesService: ResultValueTypesService,
+    private readonly containerService: ContainerService,
+    private readonly tSCService: TestSpecimenContainerService,
   ) {}
 
   async createTest(createTestDto: CreateTestDto) {
@@ -38,36 +42,58 @@ export class TestService {
       testUnitId,
       categoryIds,
       referenceRanges,
-      specimenId,
       resultValueTypeId,
+      specimensWithContainers,
       ...data
     } = createTestDto;
-    const [medicalDepartment, testUnit, Specimen, resultValueType] =
-      await Promise.all([
-        this.medicalDepartmentsService.findOne(medicalDepartmentId),
-        this.testUnitService.findOne(testUnitId),
-        this.specimensService.findOne(specimenId),
-        this.resultValueTypesService.findOne(resultValueTypeId),
-      ]);
+
+    const [medicalDepartment, testUnit, resultValueType] = await Promise.all([
+      this.medicalDepartmentsService.findOne(medicalDepartmentId),
+      this.testUnitService.findOne(testUnitId),
+      this.resultValueTypesService.findOne(resultValueTypeId),
+    ]);
+
     const newTest = this.testRepo.create({
       medicalDepartment,
       testUnit,
-      specimens: Specimen,
       resultValueType,
       ...data,
     });
+
     const test = await this.testRepo.save(newTest);
-    await Promise.all([
-      ...createTestDto.categoryIds.map((categoryId) => {
-        return this.testCategoryMapService.create({
-          testId: test.id,
-          categoryId,
-        });
-      }),
-      ...referenceRanges.map((refRange) => {
-        return this.refRangeService.create(refRange, test);
-      }),
-    ]);
+
+    if (specimensWithContainers != undefined) {
+      await Promise.all([
+        ...createTestDto.categoryIds.map((categoryId) => {
+          return this.testCategoryMapService.create({
+            testId: test.id,
+            categoryId,
+          });
+        }),
+        ...referenceRanges.map((refRange) => {
+          return this.refRangeService.create(refRange, test);
+        }),
+        ...specimensWithContainers.map(async (details) => {
+          const { specimenId, containerId } = details;
+          const specimen = await this.specimensService.findOne(specimenId);
+          const cotanier = await this.containerService.findOne(containerId);
+          return this.tSCService.createFormObj(test, specimen, cotanier);
+        }),
+      ]);
+    } else {
+      await Promise.all([
+        ...createTestDto.categoryIds.map((categoryId) => {
+          return this.testCategoryMapService.create({
+            testId: test.id,
+            categoryId,
+          });
+        }),
+        ...referenceRanges.map((refRange) => {
+          return this.refRangeService.create(refRange, test);
+        }),
+      ]);
+    }
+
     return await this.findOne(test.id);
   }
 
@@ -109,15 +135,18 @@ export class TestService {
       relations: {
         referenceRanges: true,
         resultValueOptions: true,
+        resultValueType: true,
       },
     });
-    if (!test) {
-      throw new NotFoundException(`Test with ID ${id} not found`);
-    }
+
+    if (!test) throw new NotFoundException(`Test with ID ${id} not found`);
+
+    const specimensWithContainers = await this.tSCService.findByTestId(test.id);
+
     const categories =
       await this.testCategoryMapService.findAllCategoryForTestByTestId(test.id);
     // const reference_range = await this.refRangeService.findByTestId(test.id);
-    return { ...test, categories };
+    return { ...test, categories, storage: specimensWithContainers };
   }
 
   async updateTest(id: AppBaseEntityIdDataType, updateTestDto: UpdateTestDto) {

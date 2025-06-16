@@ -22,17 +22,14 @@ export class TestEntity extends AppBaseEntity {
   @ManyToOne(() => MedicalDepartmentEntity, { eager: true })
   medicalDepartment: MedicalDepartmentEntity;
 
-  @ManyToOne(() => SpecimenEntity, { eager: true })
-  specimens: SpecimenEntity;
-
-  @ManyToOne(() => ResultValueTypeEntity, { eager: true })
-  resultValueType: ResultValueTypeEntity;
+  @OneToMany(() => TestCategoryMapEntity, (map) => map.test)
+  categoryMappings: TestCategoryMapEntity[];
 
   @OneToMany(() => ReferenceRangeEntity, (range) => range.test)
   referenceRanges: ReferenceRangeEntity[];
 
-  @OneToMany(() => TestCategoryMapEntity, (map) => map.test)
-  categoryMappings: TestCategoryMapEntity[];
+  @ManyToOne(() => ResultValueTypeEntity, { eager: true })
+  resultValueType: ResultValueTypeEntity;
 
   @OneToMany(() => ResultValueOptionEntity, (rvo) => rvo.test, {
     eager: true,

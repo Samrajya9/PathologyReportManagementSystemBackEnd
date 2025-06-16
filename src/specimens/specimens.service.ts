@@ -12,6 +12,7 @@ export class SpecimensService {
     @InjectRepository(SpecimenEntity)
     private readonly specimenRepo: Repository<SpecimenEntity>,
   ) {}
+
   async create(createSpecimenDto: CreateSpecimenDto) {
     const specimen = this.specimenRepo.create(createSpecimenDto);
     const newSpecimen = await this.specimenRepo.save(specimen);

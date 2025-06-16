@@ -2,9 +2,11 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsDefined,
+  IsInt,
   IsNotEmpty,
   IsNumber,
   IsNumberString,
+  IsOptional,
   IsString,
   ValidateNested,
 } from 'class-validator';
@@ -25,10 +27,11 @@ export class CreateTestDto {
   @Type(() => Number)
   testUnitId: AppBaseEntityIdDataType;
 
-  @IsNotEmpty()
-  @IsNumber()
-  @Type(() => Number)
-  specimenId: AppBaseEntityIdDataType;
+  @IsOptional()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => SpecimenContainerDto)
+  specimensWithContainers?: SpecimenContainerDto[];
 
   @IsNotEmpty()
   @IsNumber()
@@ -46,8 +49,18 @@ export class CreateTestDto {
   categoryIds: AppBaseEntityIdDataType[];
 
   @IsArray()
-  @ValidateNested({ each: true })
   @IsDefined({ message: 'referenceRanges is required' }) // 👈 Force presence
+  @ValidateNested({ each: true })
   @Type(() => CreateReferenceRangeDtoWithoutTestId)
   referenceRanges: CreateReferenceRangeDtoWithoutTestId[];
+}
+
+export class SpecimenContainerDto {
+  @IsNotEmpty()
+  @IsInt()
+  specimenId: number;
+
+  @IsNotEmpty()
+  @IsInt()
+  containerId: number;
 }

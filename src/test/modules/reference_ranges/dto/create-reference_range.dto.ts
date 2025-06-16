@@ -31,6 +31,10 @@ export class MaxGreaterThanMinValidator
 }
 
 export class CreateReferenceRangeDto {
+  @IsOptional()
+  @IsNumber()
+  id?: number;
+
   @IsNotEmpty()
   testId: AppBaseEntityIdDataType;
 
@@ -72,8 +76,4 @@ export class CreateReferenceRangeDto {
 export class CreateReferenceRangeDtoWithoutTestId extends OmitType(
   CreateReferenceRangeDto,
   ['testId'] as const,
-) {
-  @IsOptional()
-  @IsNumber()
-  id?: number;
-}
+) {}
