@@ -31,11 +31,11 @@ export class TestController {
     return this.testService.findAllTest(pageNumber, limitNumber);
   }
 
-  // @Get(':id')
-  // findOne(@Param('id') id: number) {
-  //   console.log('Inside TestController ');
-  //   return this.testService.findOne(id);
-  // }
+  @Get(':id')
+  findOne(@Param('id') id: number) {
+    console.log('Inside TestController ');
+    return this.testService.findOne(id);
+  }
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTestDto: UpdateTestDto) {

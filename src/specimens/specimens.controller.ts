@@ -1,9 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
 import { SpecimensService } from './specimens.service';
 import { CreateSpecimenDto } from './dto/create-specimen.dto';
 import { UpdateSpecimenDto } from './dto/update-specimen.dto';
 
-@Controller('specimens')
+@Controller('')
 export class SpecimensController {
   constructor(private readonly specimensService: SpecimensService) {}
 
@@ -23,7 +31,10 @@ export class SpecimensController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateSpecimenDto: UpdateSpecimenDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateSpecimenDto: UpdateSpecimenDto,
+  ) {
     return this.specimensService.update(+id, updateSpecimenDto);
   }
 

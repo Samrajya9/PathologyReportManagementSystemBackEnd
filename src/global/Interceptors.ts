@@ -24,9 +24,13 @@ export class AppInterceptors implements NestInterceptor {
     const files = request.files || request.file;
     const userAgent = request.get('user-agent') || '';
     const ip = request.ip || request.connection?.remoteAddress;
+    const endpoint = context.getHandler()['path'] || request.route?.path;
+    const userTypedEndpoint = request.originalUrl; // Full URL with query params
 
     const logMessage = [
       `Incoming Request:`,
+      `userTypedEndpoint: ${userTypedEndpoint}`, // Added endpoint here
+      `Endpoint: ${endpoint}`, // Added endpoint here
       `Class: ${className}`,
       `Handler: ${handlerName}`,
       `Method: ${method}`,

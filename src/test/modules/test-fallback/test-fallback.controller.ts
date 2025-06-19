@@ -1,8 +1,15 @@
-import { Controller, forwardRef, Get, Inject, Param } from '@nestjs/common';
+import {
+  Controller,
+  forwardRef,
+  Get,
+  Inject,
+  Param,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { TestFallbackService } from './test-fallback.service';
 import { TestService } from 'src/test/test.service';
 
-@Controller('')
+@Controller()
 export class TestFallbackController {
   constructor(
     private readonly testFallbackService: TestFallbackService,
@@ -10,8 +17,11 @@ export class TestFallbackController {
     private readonly testService: TestService,
   ) {}
 
-  @Get(':id')
-  getTestById(@Param('id') id: string) {
+  @Get()
+  getTestById(@Param('id', ParseIntPipe) id: number) {
+    // Add ParseIntPipe
+    console.log(id);
+
     return this.testService.findOne(+id);
   }
 }

@@ -30,8 +30,8 @@ export class CreateTestDto {
   @IsOptional()
   @IsArray()
   @ValidateNested({ each: true })
-  @Type(() => SpecimenContainerDto)
-  specimensWithContainers?: SpecimenContainerDto[];
+  @Type(() => specimenRequirement)
+  specimenRequirements?: specimenRequirement[];
 
   @IsNotEmpty()
   @IsNumber()
@@ -55,7 +55,7 @@ export class CreateTestDto {
   referenceRanges: CreateReferenceRangeDtoWithoutTestId[];
 }
 
-export class SpecimenContainerDto {
+export class specimenRequirement {
   @IsNotEmpty()
   @IsInt()
   specimenId: number;

@@ -1,4 +1,10 @@
-import { forwardRef, Module } from '@nestjs/common';
+import {
+  forwardRef,
+  MiddlewareConsumer,
+  Module,
+  NestModule,
+  RequestMethod,
+} from '@nestjs/common';
 import { PanelTestsService } from './panel_tests.service';
 import { PanelTestsController } from './panel_tests.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -17,3 +23,11 @@ import { TestModule } from 'src/test/test.module';
   exports: [PanelTestsService],
 })
 export class PanelTestsModule {}
+
+// implements NestModule {
+//   configure(consumer: MiddlewareConsumer) {
+//     consumer
+//       .apply()
+//       .forRoutes({ path: 'panels/tests*', method: RequestMethod.ALL });
+//   }
+// }

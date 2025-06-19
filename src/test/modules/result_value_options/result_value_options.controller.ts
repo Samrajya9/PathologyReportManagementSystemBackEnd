@@ -22,8 +22,6 @@ export class ResultValueOptionsController {
     @Body()
     createResultValueOptionDto: CreateResultValueOptionDto,
   ) {
-    console.log('hi');
-
     return this.resultValueOptionsService.createFromUrl(
       createResultValueOptionDto,
     );

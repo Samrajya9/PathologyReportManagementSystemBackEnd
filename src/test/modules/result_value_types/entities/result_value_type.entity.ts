@@ -5,7 +5,4 @@ import { Column, Entity } from 'typeorm';
 export class ResultValueTypeEntity extends AppBaseEntity {
   @Column()
   name: string; // Numeric’, ‘Text’, ‘Categorical’, or ‘Semi-Quantitative
-
-  @Column({ type: 'text' })
-  description: string;
 }

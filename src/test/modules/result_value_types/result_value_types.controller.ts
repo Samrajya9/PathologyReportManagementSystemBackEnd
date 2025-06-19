@@ -11,7 +11,7 @@ import { ResultValueTypesService } from './result_value_types.service';
 import { CreateResultValueTypeDto } from './dto/create-result_value_type.dto';
 import { UpdateResultValueTypeDto } from './dto/update-result_value_type.dto';
 
-@Controller('')
+@Controller()
 export class ResultValueTypesController {
   constructor(
     private readonly resultValueTypesService: ResultValueTypesService,

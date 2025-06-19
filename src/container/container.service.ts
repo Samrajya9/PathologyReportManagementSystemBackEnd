@@ -28,7 +28,7 @@ export class ContainerService {
     return container;
   }
 
-  async findOneWithTransactinally(id: number, transaction: EntityManager) {
+  async findOneWithTransactionally(id: number, transaction: EntityManager) {
     const container = await transaction.findOne(ContainerEntity, {
       where: { id },
     });
