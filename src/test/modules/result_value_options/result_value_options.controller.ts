@@ -11,7 +11,7 @@ import { ResultValueOptionsService } from './result_value_options.service';
 import { CreateResultValueOptionDto } from './dto/create-result_value_option.dto';
 import { UpdateResultValueOptionDto } from './dto/update-result_value_option.dto';
 
-@Controller()
+@Controller('result-value-options') // Ensure this has a specific prefix
 export class ResultValueOptionsController {
   constructor(
     private readonly resultValueOptionsService: ResultValueOptionsService,

@@ -18,7 +18,7 @@ export class ResultValueTypesService {
   }
 
   findAll() {
-    return `This action returns all resultValueTypes`;
+    return this.resultValueTypeRepo.find();
   }
 
   async findOne(id: number) {

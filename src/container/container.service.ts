@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { CreateContainerDto } from './dto/create-container.dto';
 import { UpdateContainerDto } from './dto/update-container.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,8 +21,8 @@ export class ContainerService {
     return newContainer;
   }
 
-  findAll() {
-    return `This action returns all container`;
+  async findAll() {
+    return this.containerRepo.find();
   }
 
   async findOne(id: number) {
@@ -37,11 +41,16 @@ export class ContainerService {
       throw new NotFoundException(`Container with Id ${id} not found`);
     return container;
   }
-  update(id: number, updateContainerDto: UpdateContainerDto) {
-    return `This action updates a #${id} container`;
+  async update(id: number, updateContainerDto: UpdateContainerDto) {
+    const container = await this.findOne(id);
+    const updatedContainer = await this.containerRepo.merge(
+      container,
+      updateContainerDto,
+    );
+    return this.containerRepo.save(updateContainerDto);
   }
 
   remove(id: number) {
-    return `This action removes a #${id} container`;
+    return this.containerRepo.delete({ id });
   }
 }

@@ -7,7 +7,7 @@ import {
 import { CreateTestDto } from './dto/create-test.dto';
 import { UpdateTestDto } from './dto/update-test.dto';
 import { InjectRepository } from '@nestjs/typeorm';
-import { FindManyOptions, Repository } from 'typeorm';
+import { FindManyOptions, ILike, Repository } from 'typeorm';
 import { TestEntity } from './entities/test.entity';
 import { TestUnitService } from './modules/test-unit/test-unit.service';
 import { TestCategoryMapService } from './modules/test-category-map/test-category-map.service';
@@ -18,6 +18,7 @@ import { SpecimensService } from 'src/specimens/specimens.service';
 import { ResultValueTypesService } from './modules/result_value_types/result_value_types.service';
 import { ContainerService } from 'src/container/container.service';
 import { TestSpecimenContainerService } from './modules/test_specimen_container/test_specimen_container.service';
+import { SearchTestDto } from './dto/search-test.dto';
 
 @Injectable()
 export class TestService {
@@ -244,6 +245,12 @@ export class TestService {
     return this.testRepo.delete({ id });
   }
 
+  async searchTests(searchDto: SearchTestDto) {
+    const { name } = searchDto;
+    return this.testRepo.find({
+      where: name ? { name: ILike(`%${name}&`) } : {},
+    });
+  }
   private async handleCategoryUpdates(
     testId: AppBaseEntityIdDataType,
     newCategoryIds: AppBaseEntityIdDataType[],

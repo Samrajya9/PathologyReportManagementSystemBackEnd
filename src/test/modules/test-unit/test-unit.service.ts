@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { CreateTesUnitDto } from './dto/create-tes-unit.dto';
 import { UpdateTesUnitDto } from './dto/update-tes-unit.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -26,7 +26,7 @@ export class TestUnitService {
       where: { id },
     });
     if (!testUnit) {
-      throw new Error('Test unit not found');
+      throw new NotFoundException('Test unit not found');
     }
     return testUnit;
   }
@@ -36,6 +36,7 @@ export class TestUnitService {
     updateTesUnitDto: UpdateTesUnitDto,
   ) {
     const testUnit = await this.findOne(id);
+
     const updatedUnit = this.testUnitRepo.merge(testUnit, updateTesUnitDto);
     return this.testUnitRepo.save(updatedUnit);
   }

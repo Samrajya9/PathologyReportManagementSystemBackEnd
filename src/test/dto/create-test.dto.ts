@@ -39,7 +39,7 @@ export class CreateTestDto {
   medicalDepartmentId: AppBaseEntityIdDataType;
 
   @IsNotEmpty()
-  @IsNumber()
+  @IsNumber({}, { message: `resultValueTypeId must be a number` })
   @Type(() => Number)
   resultValueTypeId: AppBaseEntityIdDataType;
 
