@@ -3,7 +3,7 @@ import { Column, Entity } from 'typeorm';
 
 @Entity({ name: 'medical_departments' })
 export class MedicalDepartmentEntity extends AppBaseEntity {
-  @Column()
+  @Column({ unique: true })
   name: string;
 
   @Column({ type: 'text', nullable: true })
