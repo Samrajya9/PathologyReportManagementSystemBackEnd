@@ -47,7 +47,7 @@ export class ContainerService {
       container,
       updateContainerDto,
     );
-    return this.containerRepo.save(updateContainerDto);
+    return this.containerRepo.save(updatedContainer);
   }
 
   remove(id: number) {

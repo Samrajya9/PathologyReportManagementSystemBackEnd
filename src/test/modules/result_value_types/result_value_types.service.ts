@@ -28,11 +28,16 @@ export class ResultValueTypesService {
     return obj;
   }
 
-  update(id: number, updateResultValueTypeDto: UpdateResultValueTypeDto) {
-    return `This action updates a #${id} resultValueType`;
+  async update(id: number, updateResultValueTypeDto: UpdateResultValueTypeDto) {
+    const entry = await this.findOne(id);
+    const update = this.resultValueTypeRepo.merge(
+      entry,
+      updateResultValueTypeDto,
+    );
+    return await this.resultValueTypeRepo.save(update);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} resultValueType`;
+  async remove(id: number) {
+    return await this.resultValueTypeRepo.delete({ id });
   }
 }
