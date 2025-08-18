@@ -10,7 +10,7 @@ import { APP_INTERCEPTOR, RouterModule } from '@nestjs/core';
 import { CacheModule } from '@nestjs/cache-manager';
 import { createKeyv } from '@keyv/redis';
 import { MedicalDepartmentsModule } from './medical_departments/medical_departments.module';
-import { AppRoutes } from './global/routes/routes';
+import { AppRoutes } from './routes';
 import { PanelsModule } from './panels/panels.module';
 import { SpecimensModule } from './specimens/specimens.module';
 import { AppExceptionFilters } from './global/filters/app-exception.filter';
