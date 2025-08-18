@@ -18,13 +18,11 @@ export class TestCategoryController {
 
   @Post()
   create(@Body() createTestCategoryDto: CreateTestCategoryDto) {
-    console.log('Hi');
     return this.testCategoryService.create(createTestCategoryDto);
   }
 
   @Get()
   findAll() {
-    console.log('Geting all test');
     return this.testCategoryService.findAll();
   }
 

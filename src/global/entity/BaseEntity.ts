@@ -8,7 +8,7 @@ import {
 export type AppBaseEntityIdDataType = number;
 
 @Entity()
-export class AppBaseEntity {
+export abstract class AppBaseEntity {
   @PrimaryGeneratedColumn()
   id: AppBaseEntityIdDataType;
 

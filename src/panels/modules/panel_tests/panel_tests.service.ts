@@ -38,7 +38,6 @@ export class PanelTestsService {
     const tests = await Promise.all(
       panelTests.map((panel) => this.testService.findOne(panel.test.id)),
     );
-    console.log('test', tests);
 
     return tests;
   }

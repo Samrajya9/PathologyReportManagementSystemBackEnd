@@ -26,7 +26,6 @@ export class TestUnitController {
   @Get()
   // @CacheKey('custom_units_key')
   findAll() {
-    console.log('Inside TestUnitController');
     return this.testUnitService.findAll();
   }
 
@@ -37,8 +36,6 @@ export class TestUnitController {
 
   @Patch(':id')
   update(@Param('id') id: string, @Body() updateTesUnitDto: UpdateTesUnitDto) {
-    console.log('TestUnitController');
-
     return this.testUnitService.update(+id, updateTesUnitDto);
   }
 

@@ -7,15 +7,15 @@ import { DatabaseConfig } from './global/config';
 import { DataSourceOptions } from 'typeorm';
 import { TestModule } from './test/test.module';
 import { APP_INTERCEPTOR, RouterModule } from '@nestjs/core';
-import { AppInterceptors } from './global/Interceptors';
-import { CacheInterceptor, CacheModule } from '@nestjs/cache-manager';
+import { CacheModule } from '@nestjs/cache-manager';
 import { createKeyv } from '@keyv/redis';
 import { MedicalDepartmentsModule } from './medical_departments/medical_departments.module';
 import { AppRoutes } from './global/routes/routes';
 import { PanelsModule } from './panels/panels.module';
 import { SpecimensModule } from './specimens/specimens.module';
-import { ApplicationExceptionFilters } from './global/ExceptionFilters';
+import { AppExceptionFilters } from './global/filters/app-exception.filter';
 import { ContainerModule } from './container/container.module';
+import { AppInterceptors } from './global/interceptors/app.interceptor';
 
 @Module({
   imports: [
@@ -55,7 +55,7 @@ import { ContainerModule } from './container/container.module';
   providers: [
     {
       provide: 'APP_FILTER',
-      useClass: ApplicationExceptionFilters,
+      useClass: AppExceptionFilters,
     },
     {
       provide: APP_INTERCEPTOR,

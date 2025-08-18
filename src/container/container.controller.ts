@@ -10,6 +10,7 @@ import {
 import { ContainerService } from './container.service';
 import { CreateContainerDto } from './dto/create-container.dto';
 import { UpdateContainerDto } from './dto/update-container.dto';
+import { ResponseMessage } from 'src/global/decorators/response-message.decorator';
 
 @Controller('')
 export class ContainerController {
@@ -21,6 +22,7 @@ export class ContainerController {
   }
 
   @Get()
+  @ResponseMessage('Test fetched successfully')
   findAll() {
     return this.containerService.findAll();
   }

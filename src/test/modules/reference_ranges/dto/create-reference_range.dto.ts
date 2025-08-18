@@ -12,7 +12,7 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { AppBaseEntityIdDataType } from 'src/global/entity/BaseEntity';
-import { Gender } from '../entities/reference_range.entity';
+import { GenderEnum } from '../entities/reference_range.entity';
 import { OmitType } from '@nestjs/mapped-types';
 
 @ValidatorConstraint({ name: 'MaxGreaterThanMin', async: false })
@@ -47,8 +47,8 @@ export class CreateReferenceRangeDto {
   age_max_years: string;
 
   @IsOptional()
-  @IsEnum(Gender, { message: 'Gender must be one of: male, female, other' })
-  gender: string;
+  @IsEnum(GenderEnum, { message: 'Gender must be one of: male, female, other' })
+  gender: GenderEnum;
 
   @IsNumberString()
   @IsNotEmpty()

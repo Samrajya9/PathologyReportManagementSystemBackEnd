@@ -96,3 +96,31 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+src/
+├─ global/
+│ ├─ config/
+│ │ ├─ database/
+│ │ │ ├─ typeorm.config.ts
+│ │ │ └─ dataSource.ts
+│ │ ├─ redis.config.ts
+│ │ └─ index.ts
+│ ├─ dto/
+│ │ └─ base-response.dto.ts
+│ ├─ decorators/
+│ ├─ interceptors/
+│ └─ filters/
+├─ common/
+│ ├─ utils/
+│ ├─ constants/
+│ ├─ enums/
+│ └─ validators/
+├─ modules/
+│ ├─ tests/
+│ │ ├─ dto/
+│ │ ├─ entities/
+│ │ ├─ tests.controller.ts
+│ │ ├─ tests.service.ts
+│ │ └─ tests.module.ts
+│ └─ panels/
+├─ main.ts

@@ -63,37 +63,25 @@ export class TestService {
 
     const test = await this.testRepo.save(newTest);
 
-    if (specimenRequirements != undefined) {
-      await Promise.all([
-        ...createTestDto.categoryIds.map((categoryId) => {
-          return this.testCategoryMapService.create({
-            testId: test.id,
-            categoryId,
-          });
-        }),
-        ...referenceRanges.map((refRange) => {
-          return this.refRangeService.create(refRange, test);
-        }),
-        ...specimenRequirements.map(async (details) => {
-          const { specimenId, containerId } = details;
-          const specimen = await this.specimensService.findOne(specimenId);
-          const cotanier = await this.containerService.findOne(containerId);
-          return this.tSCService.createFormObj(test, specimen, cotanier);
-        }),
-      ]);
-    } else {
-      await Promise.all([
-        ...createTestDto.categoryIds.map((categoryId) => {
-          return this.testCategoryMapService.create({
-            testId: test.id,
-            categoryId,
-          });
-        }),
-        ...referenceRanges.map((refRange) => {
-          return this.refRangeService.create(refRange, test);
-        }),
-      ]);
-    }
+    await Promise.all([
+      // ...categoryIds.map((categoryId) => {
+      //   return this.testCategoryMapService.create({
+      //     testId: test.id,
+      //     categoryId,
+      //   });
+      // }),
+      ...referenceRanges.map((refRange) => {
+        return this.refRangeService.create(refRange, test);
+      }),
+      ...specimenRequirements.map(async (details) => {
+        const { specimenId, containerId } = details;
+        const [specimen, cotanier] = await Promise.all([
+          this.specimensService.findOne(specimenId),
+          this.containerService.findOne(containerId),
+        ]);
+        return this.tSCService.createFormObj(test, specimen, cotanier);
+      }),
+    ]);
 
     return await this.findOne(test.id);
   }

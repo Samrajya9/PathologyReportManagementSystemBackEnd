@@ -38,7 +38,6 @@ export class TestController {
 
   @Get(':id')
   findOne(@Param('id') id: number) {
-    console.log('Inside TestController ');
     return this.testService.findOne(id);
   }
 

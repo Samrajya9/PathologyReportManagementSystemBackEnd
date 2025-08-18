@@ -25,7 +25,6 @@ export const AppRoutes: Routes = [
     path: 'medical_departments',
     module: MedicalDepartmentsModule,
   },
-
   {
     path: 'panels',
     module: PanelsModule,

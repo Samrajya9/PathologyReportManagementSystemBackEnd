@@ -11,7 +11,7 @@ import { MedicalDepartmentsService } from './medical_departments.service';
 import { CreateMedicalDepartmentDto } from './dto/create-medical_department.dto';
 import { UpdateMedicalDepartmentDto } from './dto/update-medical_department.dto';
 
-@Controller('')
+@Controller()
 export class MedicalDepartmentsController {
   constructor(
     private readonly medicalDepartmentsService: MedicalDepartmentsService,

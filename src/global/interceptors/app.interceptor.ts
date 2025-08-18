@@ -6,20 +6,23 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { catchError, map, throwError } from 'rxjs';
+import { BaseResponse } from 'src/global/dto/base-response.dto';
+import { Reflector } from '@nestjs/core';
+import { RESPONSE_MESSAGE_KEY } from 'src/global/decorators/response-message.decorator';
 
 @Injectable()
 export class AppInterceptors implements NestInterceptor {
+  constructor(private reflector: Reflector) {}
+
   intercept(context: ExecutionContext, next: CallHandler) {
     const logger = new Logger('AppInterceptors');
     const ctx = context.switchToHttp();
     const request = ctx.getRequest();
-    const response = ctx.getResponse();
 
     // Get request metadata
     const className = context.getClass().name;
     const handlerName = context.getHandler().name;
     const method = request.method;
-    const url = request.originalUrl;
     const requestBody = this.sanitizeBody(request.body);
     const files = request.files || request.file;
     const userAgent = request.get('user-agent') || '';
@@ -28,7 +31,8 @@ export class AppInterceptors implements NestInterceptor {
     const userTypedEndpoint = request.originalUrl; // Full URL with query params
 
     const logMessage = [
-      `Incoming Request:`,
+      '',
+      `Incoming Request----------`,
       `userTypedEndpoint: ${userTypedEndpoint}`, // Added endpoint here
       `Endpoint: ${endpoint}`, // Added endpoint here
       `Class: ${className}`,
@@ -40,16 +44,26 @@ export class AppInterceptors implements NestInterceptor {
       `Files: ${JSON.stringify(this.sanitizeFiles(files))}`,
       ``,
     ].join('\n');
+
     logger.verbose(logMessage);
 
     // Intercept the request here
     return next.handle().pipe(
       map((result) => {
-        const res = {
+        const message =
+          this.reflector.get<string>(
+            RESPONSE_MESSAGE_KEY,
+            context.getHandler(),
+          ) || 'Request processed successfully';
+        const baseResponse: BaseResponse<typeof result> = {
           status: 'success',
+          message,
           data: result,
+          errors: null, // add this
+          timestamp: new Date().toISOString(),
+          path: request.url,
         };
-        return res;
+        return baseResponse;
       }),
       // Log the response
       catchError((error) => {

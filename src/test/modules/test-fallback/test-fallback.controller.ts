@@ -20,8 +20,6 @@ export class TestFallbackController {
   @Get()
   getTestById(@Param('id', ParseIntPipe) id: number) {
     // Add ParseIntPipe
-    console.log(id);
-
     return this.testService.findOne(+id);
   }
 }

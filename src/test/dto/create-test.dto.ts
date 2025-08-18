@@ -27,11 +27,11 @@ export class CreateTestDto {
   @Type(() => Number)
   testUnitId: AppBaseEntityIdDataType;
 
-  @IsOptional()
   @IsArray()
+  @IsDefined({ message: 'specimenRequirements is required' }) // 👈 Force presence
+  @Type(() => SpecimenRequirement)
   @ValidateNested({ each: true })
-  @Type(() => specimenRequirement)
-  specimenRequirements?: specimenRequirement[];
+  specimenRequirements: SpecimenRequirement[];
 
   @IsNotEmpty()
   @IsNumber()
@@ -55,7 +55,7 @@ export class CreateTestDto {
   referenceRanges: CreateReferenceRangeDtoWithoutTestId[];
 }
 
-export class specimenRequirement {
+export class SpecimenRequirement {
   @IsNotEmpty()
   @IsInt()
   specimenId: number;
