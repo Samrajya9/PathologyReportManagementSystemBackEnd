@@ -15,9 +15,9 @@ export class TestSpecimenContainerService {
     private readonly tscRepo: Repository<TestSpecimenContainerEntity>,
   ) {}
 
-  async create(
-    createTestSpecimenContainerDto: CreateTestSpecimenContainerDto,
-  ) {}
+  async create(createTestSpecimenContainerDto: CreateTestSpecimenContainerDto) {
+    const [] = await Promise.all([]);
+  }
 
   async createFormObj(
     test: TestEntity,

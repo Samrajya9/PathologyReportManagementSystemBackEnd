@@ -12,7 +12,6 @@ import { TestService } from '@modules/test/test.service';
 @Controller()
 export class TestFallbackController {
   constructor(
-    private readonly testFallbackService: TestFallbackService,
     @Inject(forwardRef(() => TestService))
     private readonly testService: TestService,
   ) {}
