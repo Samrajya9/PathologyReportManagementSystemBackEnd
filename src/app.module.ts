@@ -3,19 +3,19 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { DatabaseConfig } from './global/config';
+import { DatabaseConfig } from './common/config';
 import { DataSourceOptions } from 'typeorm';
-import { TestModule } from './test/test.module';
 import { APP_INTERCEPTOR, RouterModule } from '@nestjs/core';
 import { CacheModule } from '@nestjs/cache-manager';
 import { createKeyv } from '@keyv/redis';
-import { MedicalDepartmentsModule } from './medical_departments/medical_departments.module';
+import { MedicalDepartmentsModule } from './modules/medical_departments/medical_departments.module';
 import { AppRoutes } from './routes';
-import { PanelsModule } from './panels/panels.module';
-import { SpecimensModule } from './specimens/specimens.module';
-import { AppExceptionFilters } from './global/filters/app-exception.filter';
-import { ContainerModule } from './container/container.module';
-import { AppInterceptors } from './global/interceptors/app.interceptor';
+import { TestModule } from '@modules/test/test.module';
+import { PanelsModule } from '@modules/panels/panels.module';
+import { SpecimensModule } from '@modules/specimens/specimens.module';
+import { ContainerModule } from '@modules/container/container.module';
+import { AppExceptionFilters } from './common/filters/app-exception.filter';
+import { AppInterceptors } from './common/interceptors/app.interceptor';
 
 @Module({
   imports: [
