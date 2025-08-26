@@ -38,6 +38,10 @@ export class CreateReferenceRangeDto {
   @IsNotEmpty()
   testId: AppBaseEntityIdDataType;
 
+  @IsOptional()
+  @IsEnum(GenderEnum, { message: 'Gender must be one of: male, female, other' })
+  gender: GenderEnum;
+
   @IsNotEmpty()
   @IsNumberString()
   age_min_years: string;
@@ -45,10 +49,6 @@ export class CreateReferenceRangeDto {
   @IsNotEmpty()
   @IsNumberString()
   age_max_years: string;
-
-  @IsOptional()
-  @IsEnum(GenderEnum, { message: 'Gender must be one of: male, female, other' })
-  gender: GenderEnum;
 
   @IsNumberString()
   @IsNotEmpty()
