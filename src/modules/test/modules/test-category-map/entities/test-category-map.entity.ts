@@ -3,6 +3,7 @@ import { Entity, Index, ManyToOne } from 'typeorm';
 import { TestCategoryEntity } from '../../test-category/entities/test-category.entity';
 import { TestEntity } from '@modules/test/entities/test.entity';
 
+// Remove in Main
 @Entity({ name: 'test_category_map' })
 export class TestCategoryMapEntity extends AppBaseEntity {
   @Index()
