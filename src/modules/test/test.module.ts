@@ -4,9 +4,6 @@ import { TestController } from './test.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { TestEntity } from './entities/test.entity';
 import { TestUnitModule } from './modules/test-unit/test-unit.module';
-// import { TestCategoryModule } from './modules/test-category/test-category.module';
-// import { TestCategoryMapModule } from './modules/test-category-map/test-category-map.module';
-import { TestFallbackModule } from './modules/test-fallback/test-fallback.module';
 import { MedicalDepartmentsModule } from '@modules/medical_departments/medical_departments.module';
 import { ReferenceRangesModule } from './modules/reference_ranges/reference_ranges.module';
 import { SpecimensModule } from '@modules/specimens/specimens.module';
@@ -20,9 +17,6 @@ import { ContainerModule } from '@modules/container/container.module';
     TypeOrmModule.forFeature([TestEntity]),
     MedicalDepartmentsModule,
     TestUnitModule,
-    // TestCategoryModule,
-    // forwardRef(() => TestCategoryMapModule),
-    // forwardRef(() => TestFallbackModule),
     forwardRef(() => ReferenceRangesModule),
     SpecimensModule,
     ResultValueOptionsModule,

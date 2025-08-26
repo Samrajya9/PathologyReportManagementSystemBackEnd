@@ -289,7 +289,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FindManyOptions, ILike, Repository } from 'typeorm';
 import { TestEntity } from './entities/test.entity';
 import { TestUnitService } from './modules/test-unit/test-unit.service';
-// import { TestCategoryMapService } from './modules/test-category-map/test-category-map.service';
 import { AppBaseEntityIdDataType } from 'src/common/entity/BaseEntity';
 import { MedicalDepartmentsService } from '@modules/medical_departments/medical_departments.service';
 import { ReferenceRangesService } from './modules/reference_ranges/reference_ranges.service';
@@ -306,8 +305,6 @@ export class TestService {
     private readonly testRepo: Repository<TestEntity>,
     private readonly testUnitService: TestUnitService,
     private readonly medicalDepartmentsService: MedicalDepartmentsService,
-    // @Inject(forwardRef(() => TestCategoryMapService))
-    // private readonly testCategoryMapService: TestCategoryMapService,
     @Inject(forwardRef(() => ReferenceRangesService))
     private readonly refRangeService: ReferenceRangesService,
     private readonly specimensService: SpecimensService,
