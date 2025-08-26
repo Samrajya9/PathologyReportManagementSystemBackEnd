@@ -333,7 +333,7 @@ export class TestService {
     const newTest = this.testRepo.create({
       medicalDepartment,
       testUnit,
-      resultValueType,
+      // resultValueType,
       ...data,
     });
 
@@ -409,7 +409,7 @@ export class TestService {
       relations: {
         referenceRanges: true,
         resultValueOptions: true,
-        resultValueType: true,
+        // resultValueType: true,
       },
     });
 
