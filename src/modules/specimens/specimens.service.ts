@@ -4,7 +4,7 @@ import { UpdateSpecimenDto } from './dto/update-specimen.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { SpecimenEntity } from './entities/specimen.entity';
 import { Repository } from 'typeorm';
-import { AppBaseEntityIdDataType } from 'src/common/entity/BaseEntity';
+import { AppBaseEntityIdDataType } from '@common/entity/BaseEntity';
 
 @Injectable()
 export class SpecimensService {
@@ -14,9 +14,9 @@ export class SpecimensService {
   ) {}
 
   async create(createSpecimenDto: CreateSpecimenDto) {
-    const specimen = this.specimenRepo.create(createSpecimenDto);
-    const newSpecimen = await this.specimenRepo.save(specimen);
-    return newSpecimen;
+    const newSpecimen = this.specimenRepo.create(createSpecimenDto);
+    const result = await this.specimenRepo.save(newSpecimen);
+    return result;
   }
 
   async findAll() {

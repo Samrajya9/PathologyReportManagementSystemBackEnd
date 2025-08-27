@@ -8,7 +8,7 @@ import {
   Delete,
 } from '@nestjs/common';
 import { MedicalDepartmentsService } from './medical_departments.service';
-import { CreateMedicalDepartmentDto } from './dto/create-medical_department.dto';
+import { CreateDepartmentDto } from './dto/create-medical_department.dto';
 import { UpdateMedicalDepartmentDto } from './dto/update-medical_department.dto';
 
 @Controller()
@@ -18,8 +18,8 @@ export class MedicalDepartmentsController {
   ) {}
 
   @Post()
-  create(@Body() createMedicalDepartmentDto: CreateMedicalDepartmentDto) {
-    return this.medicalDepartmentsService.create(createMedicalDepartmentDto);
+  create(@Body() CreateDepartmentDto: CreateDepartmentDto) {
+    return this.medicalDepartmentsService.create(CreateDepartmentDto);
   }
 
   @Get()

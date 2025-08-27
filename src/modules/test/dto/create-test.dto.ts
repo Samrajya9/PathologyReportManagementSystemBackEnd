@@ -2,6 +2,7 @@ import { Type } from 'class-transformer';
 import {
   IsArray,
   IsDefined,
+  IsEnum,
   IsInt,
   IsNotEmpty,
   IsNumber,
@@ -11,7 +12,8 @@ import {
   ValidateNested,
 } from 'class-validator';
 import { CreateReferenceRangeDtoWithoutTestId } from '../modules/reference_ranges/dto/create-reference_range.dto';
-import { AppBaseEntityIdDataType } from 'src/common/entity/BaseEntity';
+import { AppBaseEntityIdDataType } from '@common/entity/BaseEntity';
+import { ResultValueTypeEnum } from '@common/enums/result-value-type.enum';
 
 export class CreateTestDto {
   @IsNotEmpty()
@@ -28,7 +30,7 @@ export class CreateTestDto {
   testUnitId: AppBaseEntityIdDataType;
 
   @IsArray()
-  @IsDefined({ message: 'specimenRequirements is required' }) // 👈 Force presence
+  @IsDefined({ message: 'specimenRequirements is required' })
   @Type(() => SpecimenRequirement)
   @ValidateNested({ each: true })
   specimenRequirements: SpecimenRequirement[];
@@ -39,17 +41,14 @@ export class CreateTestDto {
   medicalDepartmentId: AppBaseEntityIdDataType;
 
   @IsNotEmpty()
-  @IsNumber({}, { message: `resultValueTypeId must be a number` })
-  @Type(() => Number)
-  resultValueTypeId: AppBaseEntityIdDataType;
-
-  @IsNotEmpty({ each: true, message: 'Each categoryId is required' })
-  @IsNumber({}, { each: true, message: 'Each categoryId must be a number' })
-  @Type(() => Number)
-  categoryIds: AppBaseEntityIdDataType[];
+  @IsEnum(ResultValueTypeEnum, {
+    message: 'resultValueType must be one of: Numeric, Text, Categorical',
+  })
+  @Type(() => String)
+  resultValueType: ResultValueTypeEnum;
 
   @IsArray()
-  @IsDefined({ message: 'referenceRanges is required' }) // 👈 Force presence
+  @IsDefined({ message: 'referenceRanges is required' })
   @ValidateNested({ each: true })
   @Type(() => CreateReferenceRangeDtoWithoutTestId)
   referenceRanges: CreateReferenceRangeDtoWithoutTestId[];

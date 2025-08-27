@@ -1,15 +1,10 @@
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
-import { AppBaseEntity } from 'src/common/entity/BaseEntity';
+import { AppBaseEntity } from '@common/entity/BaseEntity';
 import { TestUnitEntity } from '../modules/test-unit/entities/tes-unit.entity';
 import { MedicalDepartmentEntity } from '@modules/medical_departments/entities/medical_department.entity';
 import { ReferenceRangeEntity } from '../modules/reference_ranges/entities/reference_range.entity';
 import { ResultValueOptionEntity } from '../modules/result_value_options/entities/result_value_option.entity';
-
-export enum ResultValueTypeEnum {
-  NUMERIC = 1,
-  TEXT = 2,
-  CATEGORICAL = 3,
-}
+import { ResultValueTypeEnum } from '@common/enums/result-value-type.enum';
 
 @Entity({ name: 'tests' })
 export class TestEntity extends AppBaseEntity {

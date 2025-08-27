@@ -7,7 +7,7 @@ import {
 } from '@nestjs/common';
 import { HttpAdapterHost } from '@nestjs/core';
 import { QueryFailedError } from 'typeorm';
-import { BaseResponse } from 'src/common/dto/base-response.dto';
+import { BaseResponse } from '@common/dto/base-response.dto';
 
 @Catch()
 export class AppExceptionFilters implements ExceptionFilter {

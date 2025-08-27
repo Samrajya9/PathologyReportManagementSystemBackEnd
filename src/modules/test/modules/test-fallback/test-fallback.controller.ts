@@ -6,7 +6,6 @@ import {
   Param,
   ParseIntPipe,
 } from '@nestjs/common';
-import { TestFallbackService } from './test-fallback.service';
 import { TestService } from '@modules/test/test.service';
 
 @Controller()

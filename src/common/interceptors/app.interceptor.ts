@@ -6,9 +6,9 @@ import {
   NestInterceptor,
 } from '@nestjs/common';
 import { catchError, map, throwError } from 'rxjs';
-import { BaseResponse } from 'src/common/dto/base-response.dto';
+import { BaseResponse } from '@common/dto/base-response.dto';
 import { Reflector } from '@nestjs/core';
-import { RESPONSE_MESSAGE_KEY } from 'src/common/decorators/response-message.decorator';
+import { RESPONSE_MESSAGE_KEY } from '@common/decorators/response-message.decorator';
 
 @Injectable()
 export class AppInterceptors implements NestInterceptor {

@@ -1,4 +1,4 @@
-import { AppBaseEntity } from 'src/common/entity/BaseEntity';
+import { AppBaseEntity } from '@common/entity/BaseEntity';
 import { Column, Entity } from 'typeorm';
 
 @Entity({ name: 'specimens' })

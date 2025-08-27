@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
-import { CreateMedicalDepartmentDto } from './dto/create-medical_department.dto';
+import { CreateDepartmentDto } from './dto/create-medical_department.dto';
 import { UpdateMedicalDepartmentDto } from './dto/update-medical_department.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MedicalDepartmentEntity } from './entities/medical_department.entity';
 import { Repository } from 'typeorm';
-import { AppBaseEntityIdDataType } from 'src/common/entity/BaseEntity';
+import { AppBaseEntityIdDataType } from '@common/entity/BaseEntity';
 
 @Injectable()
 export class MedicalDepartmentsService {
@@ -13,7 +13,7 @@ export class MedicalDepartmentsService {
     private readonly medicalDepRepo: Repository<MedicalDepartmentEntity>,
   ) {}
 
-  async create(createDepartDto: CreateMedicalDepartmentDto) {
+  async create(createDepartDto: CreateDepartmentDto) {
     const newDepartment = this.medicalDepRepo.create(createDepartDto);
     const result = await this.medicalDepRepo.save(newDepartment);
     return result;

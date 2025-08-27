@@ -4,7 +4,7 @@ import { UpdateTesUnitDto } from './dto/update-tes-unit.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TestUnitEntity } from './entities/tes-unit.entity';
 import { Repository } from 'typeorm';
-import { AppBaseEntityIdDataType } from 'src/common/entity/BaseEntity';
+import { AppBaseEntityIdDataType } from '@common/entity/BaseEntity';
 
 @Injectable()
 export class TestUnitService {
@@ -12,9 +12,10 @@ export class TestUnitService {
     @InjectRepository(TestUnitEntity)
     private readonly testUnitRepo: Repository<TestUnitEntity>,
   ) {}
-  create(createTesUnitDto: CreateTesUnitDto) {
+  async create(createTesUnitDto: CreateTesUnitDto) {
     const newTestUnit = this.testUnitRepo.create(createTesUnitDto);
-    return this.testUnitRepo.save(newTestUnit);
+    const result = await this.testUnitRepo.save(newTestUnit);
+    return result;
   }
 
   findAll() {

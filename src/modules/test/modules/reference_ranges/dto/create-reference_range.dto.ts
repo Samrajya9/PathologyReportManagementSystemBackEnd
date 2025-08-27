@@ -11,7 +11,7 @@ import {
   ValidatorConstraint,
   ValidatorConstraintInterface,
 } from 'class-validator';
-import { AppBaseEntityIdDataType } from 'src/common/entity/BaseEntity';
+import { AppBaseEntityIdDataType } from '@common/entity/BaseEntity';
 import { GenderEnum } from '../entities/reference_range.entity';
 import { OmitType } from '@nestjs/mapped-types';
 

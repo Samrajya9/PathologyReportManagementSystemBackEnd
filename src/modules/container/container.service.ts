@@ -16,9 +16,9 @@ export class ContainerService {
     private readonly containerRepo: Repository<ContainerEntity>,
   ) {}
   async create(createContainerDto: CreateContainerDto) {
-    const cotanier = this.containerRepo.create(createContainerDto);
-    const newContainer = await this.containerRepo.save(cotanier);
-    return newContainer;
+    const newContainer = this.containerRepo.create(createContainerDto);
+    const result = await this.containerRepo.save(newContainer);
+    return result;
   }
 
   async findAll() {

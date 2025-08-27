@@ -1,4 +1,4 @@
-import { AppBaseEntity } from 'src/common/entity/BaseEntity';
+import { AppBaseEntity } from '@common/entity/BaseEntity';
 import { MedicalDepartmentEntity } from '@modules/medical_departments/entities/medical_department.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 

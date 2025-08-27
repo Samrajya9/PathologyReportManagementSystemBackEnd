@@ -15,7 +15,7 @@ import { Repository } from 'typeorm';
 import {
   AppBaseEntity,
   AppBaseEntityIdDataType,
-} from 'src/common/entity/BaseEntity';
+} from '@common/entity/BaseEntity';
 import { TestService } from '@modules/test/test.service';
 import { TestEntity } from '@modules/test/entities/test.entity';
 

@@ -4,7 +4,7 @@ import { UpdatePanelTestDto } from './dto/update-panel_test.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PanelTestEntity } from './entities/panel_test.entity';
 import { Repository } from 'typeorm';
-import { AppBaseEntityIdDataType } from 'src/common/entity/BaseEntity';
+import { AppBaseEntityIdDataType } from '@common/entity/BaseEntity';
 import { TestService } from '@modules/test/test.service';
 import { PanelsService } from '@modules/panels/panels.service';
 

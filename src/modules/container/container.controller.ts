@@ -10,7 +10,7 @@ import {
 import { ContainerService } from './container.service';
 import { CreateContainerDto } from './dto/create-container.dto';
 import { UpdateContainerDto } from './dto/update-container.dto';
-import { ResponseMessage } from 'src/common/decorators/response-message.decorator';
+import { ResponseMessage } from '@common/decorators/response-message.decorator';
 
 @Controller('')
 export class ContainerController {

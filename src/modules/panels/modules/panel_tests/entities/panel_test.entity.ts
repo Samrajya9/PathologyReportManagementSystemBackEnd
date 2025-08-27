@@ -1,6 +1,6 @@
 import { PanelEntity } from '@modules/panels/entities/panel.entity';
 import { TestEntity } from '@modules/test/entities/test.entity';
-import { AppBaseEntity } from 'src/common/entity/BaseEntity';
+import { AppBaseEntity } from '@common/entity/BaseEntity';
 
 import { Column, Entity, ManyToOne } from 'typeorm';
 

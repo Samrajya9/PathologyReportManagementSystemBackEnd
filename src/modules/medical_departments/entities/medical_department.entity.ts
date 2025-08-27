@@ -1,7 +1,7 @@
-import { AppBaseEntity } from 'src/common/entity/BaseEntity';
+import { AppBaseEntity } from '@common/entity/BaseEntity';
 import { Column, Entity } from 'typeorm';
 
-@Entity({ name: 'medical_departments' })
+@Entity({ name: 'departments' })
 export class MedicalDepartmentEntity extends AppBaseEntity {
   @Column({ unique: true })
   name: string;

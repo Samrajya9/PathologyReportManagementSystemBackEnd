@@ -1,4 +1,4 @@
-// src/common/decorators/response-message.decorator.ts
+// @common/decorators/response-message.decorator.ts
 import { SetMetadata } from '@nestjs/common';
 
 export const RESPONSE_MESSAGE_KEY = 'responseMessage';

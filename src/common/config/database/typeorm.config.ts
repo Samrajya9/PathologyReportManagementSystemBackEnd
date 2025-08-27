@@ -1,4 +1,4 @@
-// src/common/config/database/typeorm.config.ts
+// @common/config/database/typeorm.config.ts
 import { registerAs } from '@nestjs/config';
 import { DataSourceOptions } from 'typeorm';
 
