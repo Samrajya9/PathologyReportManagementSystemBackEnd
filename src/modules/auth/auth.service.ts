@@ -85,35 +85,23 @@ export class AuthService {
     if (doesEmailExist) {
       throw new BadRequestException(`Email ${dto.email} is already in use`);
     }
-    // const company = await this.partnerService.findCompanyById(dto.partnerCompanyId);
-    // if (!company) throw new NotFoundException('Partner company not found');
-    // const hashedPassword = await bcrypt.hash(dto.password, 10);
-    // return this.partnerService.create({
-    //   ...dto,
-    //   password: hashedPassword,
-    //   partnerCompany: company,
-    // });
+    const hashedPassword = await bcrypt.hash(dto.password, 10);
   }
 
   async registerPartnerWithCompany() {}
 
-  async signIn(loginDto: LoginDto) {
-    const user = await this.validateUser(loginDto);
+  async signIn(user: any) {
     const payload: AppJwtPayload = {
       sub: user.id,
       role: user.role,
       email: user.email,
     };
-    // Generate access token (short-lived)
     const access_token = await this.jwtService.signAsync(payload, {
-      expiresIn: '15m', // example: 15 minutes
+      expiresIn: '15m',
     });
-
-    // Generate refresh token (long-lived)
     const refresh_token = await this.jwtService.signAsync(payload, {
-      expiresIn: '7d', // example: 7 days
+      expiresIn: '7d',
     });
-
     return { id: user.id, access_token, refresh_token };
   }
 
@@ -146,10 +134,6 @@ export class AuthService {
     await this.validatePassword(password, user.password);
     return user;
   }
-
-  // private signToken(payload: AppJwtPayload, options?: JwtSignOptions) {
-  //   return this.jwtService.signAsync(payload, options);
-  // }
 
   private async validatePassword(
     plainPassword: string,

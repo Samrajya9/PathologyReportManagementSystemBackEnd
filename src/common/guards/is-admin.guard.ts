@@ -7,7 +7,7 @@ import {
 
 @Injectable()
 export class IsAdminGuard implements CanActivate {
-  canActivate(context: ExecutionContext): boolean {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const request = context.switchToHttp().getRequest();
     const user = request.user;
     if (user?.role !== 'admin') {
