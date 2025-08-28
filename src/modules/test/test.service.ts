@@ -15,10 +15,11 @@ import { AppBaseEntityIdDataType } from '@common/entity/BaseEntity';
 import { MedicalDepartmentsService } from '@modules/medical_departments/medical_departments.service';
 import { ReferenceRangesService } from './modules/reference_ranges/reference_ranges.service';
 import { SpecimensService } from '@modules/specimens/specimens.service';
-import { ResultValueTypesService } from './modules/result_value_types/result_value_types.service';
 import { ContainerService } from '@modules/container/container.service';
 import { TestSpecimenContainerService } from './modules/test_specimen_container/test_specimen_container.service';
 import { SearchTestDto } from './dto/search-test.dto';
+import { ResultValueTypeEnum } from '@common/enums/result-value-type.enum';
+import { ResultValueOptionsService } from './modules/result_value_options/result_value_options.service';
 
 @Injectable()
 export class TestService {
@@ -30,9 +31,9 @@ export class TestService {
     @Inject(forwardRef(() => ReferenceRangesService))
     private readonly refRangeService: ReferenceRangesService,
     private readonly specimensService: SpecimensService,
-    private readonly resultValueTypesService: ResultValueTypesService,
     private readonly containerService: ContainerService,
     private readonly tSCService: TestSpecimenContainerService,
+    private readonly rVOService: ResultValueOptionsService,
   ) {}
 
   async createTest(createTestDto: CreateTestDto) {
@@ -42,6 +43,7 @@ export class TestService {
       referenceRanges,
       resultValueType,
       specimenRequirements,
+      resultValueOptions,
       ...data
     } = createTestDto;
 
@@ -53,7 +55,7 @@ export class TestService {
     const newTest = this.testRepo.create({
       medicalDepartment,
       testUnit,
-      resultValueType,
+      resultValueType: ResultValueTypeEnum[resultValueType],
       ...data,
     });
 
@@ -71,6 +73,11 @@ export class TestService {
         ]);
         return this.tSCService.createFormObj(test, specimen, cotanier);
       }),
+      resultValueOptions
+        ? resultValueOptions.map((option) => {
+            return this.rVOService.create(option, test);
+          })
+        : null,
     ]);
 
     return await this.findOne(test.id);
@@ -80,9 +87,6 @@ export class TestService {
     const options: FindManyOptions = {
       relations: {
         referenceRanges: true,
-        // categoryMappings: {
-        //   category: true,
-        // },
       },
       order: {
         id: 'DESC',
@@ -102,7 +106,7 @@ export class TestService {
       );
 
       return {
-        data: processedData,
+        tests: processedData,
         meta: {
           total,
           page,
@@ -115,15 +119,11 @@ export class TestService {
   }
 
   async findOne(id: AppBaseEntityIdDataType) {
-    // const testDetails =
-    //   await this.testCategoryMapService.findAllCategoryForTestByTestId(id);
-
     const test = await this.testRepo.findOne({
       where: { id },
       relations: {
         referenceRanges: true,
         resultValueOptions: true,
-        // resultValueType: true,
       },
     });
 
@@ -131,10 +131,7 @@ export class TestService {
 
     const specimenRequirements = await this.tSCService.findByTestId(test.id);
 
-    // const categories =
-    //   await this.testCategoryMapService.findAllCategoryForTestByTestId(test.id);
-
-    return { ...test, /* categories, */ specimenRequirements };
+    return { ...test, specimenRequirements };
   }
 
   async updateTest(id: AppBaseEntityIdDataType, updateTestDto: UpdateTestDto) {
@@ -229,41 +226,4 @@ export class TestService {
       where: name ? { name: ILike(`%${name}&`) } : {},
     });
   }
-
-  // private async handleCategoryUpdates(
-  //   testId: AppBaseEntityIdDataType,
-  //   newCategoryIds: AppBaseEntityIdDataType[],
-  // ) {
-  //   const currentMapping =
-  //     await this.testCategoryMapService.findAllCategoryForTestByTestId(testId);
-  //   const currentCategoryIds = currentMapping.map((m) => m.category.id);
-  //   const categoriesChanged =
-  //     currentCategoryIds.length !== newCategoryIds.length ||
-  //     !currentCategoryIds.every((id) => newCategoryIds.includes(id)) ||
-  //     !newCategoryIds.every((id) => currentCategoryIds.includes(id));
-
-  //   if (categoriesChanged) {
-  //     const toRemove = currentMapping.filter(
-  //       (m) => !newCategoryIds.includes(m.category.id),
-  //     );
-  //     const toAdd = newCategoryIds.filter(
-  //       (id) => !currentCategoryIds.includes(id),
-  //     );
-
-  //     await Promise.all([
-  //       ...toRemove.map((mapping) =>
-  //         this.testCategoryMapService.remove(mapping.id),
-  //       ),
-  //       ...toAdd.map((categoryId) =>
-  //         this.testCategoryMapService.create({
-  //           testId,
-  //           categoryId,
-  //         }),
-  //       ),
-  //     ]);
-  //   }
-  //   return await this.testCategoryMapService.findAllCategoryForTestByTestId(
-  //     testId,
-  //   );
-  // }
 }

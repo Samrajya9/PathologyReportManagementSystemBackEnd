@@ -14,6 +14,17 @@ export class TestEntity extends AppBaseEntity {
   @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
   price: string;
 
+  //   @Column({
+  //   type: 'decimal',
+  //   precision: 10,
+  //   scale: 2,
+  //   transformer: {
+  //     to: (value: number) => value, // save as number
+  //     from: (value: string): number => parseFloat(value), // read as number
+  //   },
+  // })
+  // price: number;
+
   @Column({
     type: 'enum',
     enum: ResultValueTypeEnum,
@@ -29,9 +40,6 @@ export class TestEntity extends AppBaseEntity {
 
   @OneToMany(() => ReferenceRangeEntity, (range) => range.test)
   referenceRanges: ReferenceRangeEntity[];
-
-  // @ManyToOne(() => ResultValueTypeEntity, { eager: true })
-  // resultValueType: ResultValueTypeEntity;
 
   @OneToMany(() => ResultValueOptionEntity, (rvo) => rvo.test, {
     eager: true,

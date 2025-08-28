@@ -27,6 +27,7 @@ export class ReferenceRangesService {
     @Inject(forwardRef(() => TestService))
     private readonly testService: TestService,
   ) {}
+
   async createByTestId(createReferenceRangeDto: CreateReferenceRangeDto) {
     const { testId, ...refRangeData } = createReferenceRangeDto;
     const test = await this.testService.findOne(testId);
@@ -39,7 +40,8 @@ export class ReferenceRangesService {
     test: TestEntity,
   ) {
     const newRefRange = this.refRangeRepo.create({ ...refRangeData, test });
-    return await this.refRangeRepo.save(newRefRange);
+    const result = await this.refRangeRepo.save(newRefRange);
+    return result;
   }
 
   async findAll() {

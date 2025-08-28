@@ -3,6 +3,6 @@ import { Column, Entity } from 'typeorm';
 
 @Entity({ name: 'test_units' })
 export class TestUnitEntity extends AppBaseEntity {
-  @Column()
+  @Column({ unique: true })
   name: string;
 }

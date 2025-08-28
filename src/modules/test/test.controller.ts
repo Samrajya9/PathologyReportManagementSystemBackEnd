@@ -14,13 +14,14 @@ import { TestService } from './test.service';
 import { CreateTestDto } from './dto/create-test.dto';
 import { UpdateTestDto } from './dto/update-test.dto';
 import { SearchTestDto } from './dto/search-test.dto';
+import { ResponseMessage } from '@common/decorators/response-message.decorator';
 
 @Controller()
 export class TestController {
   constructor(private readonly testService: TestService) {}
 
-  // Tests Controllers
   @Post()
+  @ResponseMessage('Successfully Created Test')
   create(@Body() createTestDto: CreateTestDto) {
     return this.testService.createTest(createTestDto);
   }
@@ -30,6 +31,7 @@ export class TestController {
     return this.testService.searchTests(query);
   }
   @Get()
+  @ResponseMessage('Successfully fetched tests')
   findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
     const pageNumber = page ? Number(page) : 1;
     const limitNumber = limit ? Number(limit) : 5;
@@ -37,6 +39,7 @@ export class TestController {
   }
 
   @Get(':id')
+  @ResponseMessage('Successfully fetched test')
   findOne(@Param('id') id: number) {
     return this.testService.findOne(id);
   }

@@ -1,12 +1,10 @@
 import { TestEntity } from '@modules/test/entities/test.entity';
 import { AppBaseEntity } from '@common/entity/BaseEntity';
 import { Column, Entity, ManyToOne } from 'typeorm';
+import { GenderEnum } from '@common/enums/gender.enum';
 
-export enum GenderEnum {
-  MALE = 'male',
-  FEMALE = 'female',
-  ANY = 'any',
-}
+// A reference range might apply to 0 – 0.5 years (infants)
+// Another might be 0.5 – 2 years (toddlers)
 
 @Entity({ name: 'reference_ranges' })
 export class ReferenceRangeEntity extends AppBaseEntity {

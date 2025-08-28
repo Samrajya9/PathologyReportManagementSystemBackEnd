@@ -5,6 +5,7 @@ import {
   IsNumberString,
   IsOptional,
   IsString,
+  Min,
   Validate,
   ValidateIf,
   ValidationArguments,
@@ -12,8 +13,8 @@ import {
   ValidatorConstraintInterface,
 } from 'class-validator';
 import { AppBaseEntityIdDataType } from '@common/entity/BaseEntity';
-import { GenderEnum } from '../entities/reference_range.entity';
 import { OmitType } from '@nestjs/mapped-types';
+import { GenderEnum } from '@common/enums/gender.enum';
 
 @ValidatorConstraint({ name: 'MaxGreaterThanMin', async: false })
 export class MaxGreaterThanMinValidator
@@ -44,10 +45,12 @@ export class CreateReferenceRangeDto {
 
   @IsNotEmpty()
   @IsNumberString()
+  @Min(0, { message: 'age_min_years must be >= 0' })
   age_min_years: string;
 
   @IsNotEmpty()
   @IsNumberString()
+  @Min(0, { message: 'age_max_years must be >= 0' })
   age_max_years: string;
 
   @IsNumberString()

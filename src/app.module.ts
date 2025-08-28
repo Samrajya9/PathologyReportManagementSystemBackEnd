@@ -3,7 +3,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { DatabaseConfig } from './common/config';
+import { DatabaseConfig, JwtConfig } from './common/config';
 import { DataSourceOptions } from 'typeorm';
 import { APP_INTERCEPTOR, RouterModule } from '@nestjs/core';
 import { CacheModule } from '@nestjs/cache-manager';
@@ -16,16 +16,23 @@ import { SpecimensModule } from '@modules/specimens/specimens.module';
 import { ContainerModule } from '@modules/container/container.module';
 import { AppExceptionFilters } from './common/filters/app-exception.filter';
 import { AppInterceptors } from './common/interceptors/app.interceptor';
+import { PartnerModule } from './modules/partner/partner.module';
+import { PartnerCompanyModule } from './modules/partner-company/partner-company.module';
+import { UserModule } from './modules/user/user.module';
+import { AdminModule } from '@modules/admin/admin.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
   imports: [
     RouterModule.register(AppRoutes),
+
     ConfigModule.forRoot({
       cache: true,
       isGlobal: true,
-      load: [DatabaseConfig],
+      load: [DatabaseConfig, JwtConfig],
       envFilePath: '.env',
     }),
+
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
@@ -37,6 +44,7 @@ import { AppInterceptors } from './common/interceptors/app.interceptor';
         return config;
       },
     }),
+
     CacheModule.registerAsync({
       useFactory: async () => {
         return {
@@ -45,12 +53,19 @@ import { AppInterceptors } from './common/interceptors/app.interceptor';
         };
       },
     }),
+
+    AdminModule,
     TestModule,
     MedicalDepartmentsModule,
     PanelsModule,
     SpecimensModule,
     ContainerModule,
+    PartnerModule,
+    PartnerCompanyModule,
+    UserModule,
+    AuthModule,
   ],
+
   controllers: [AppController],
   providers: [
     {

@@ -1,6 +1,7 @@
-import { IsNotEmpty } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateContainerDto {
-  @IsNotEmpty()
+  @IsNotEmpty({ message: 'Container name is required' })
+  @IsString()
   name: string;
 }

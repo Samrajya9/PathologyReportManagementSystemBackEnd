@@ -4,7 +4,6 @@ import { MedicalDepartmentsModule } from '@modules/medical_departments/medical_d
 import { SpecimensModule } from '@modules/specimens/specimens.module';
 import { ResultValueTypesModule } from '@modules/test/modules/result_value_types/result_value_types.module';
 import { TestUnitModule } from '@modules/test/modules/test-unit/test-unit.module';
-// import { TestCategoryModule } from '@modules/test/modules/test-category/test-category.module';
 import { PanelsModule } from '@modules/panels/panels.module';
 import { TestModule } from '@modules/test/test.module';
 
@@ -17,10 +16,7 @@ export const AppRoutes: Routes = [
     path: 'test-units',
     module: TestUnitModule,
   },
-  // {
-  //   path: 'test-categories',
-  //   module: TestCategoryModule,
-  // },
+
   {
     path: 'medical_departments',
     module: MedicalDepartmentsModule,
