@@ -11,7 +11,7 @@ import { PartnerUserEntity } from '@modules/partner/entities/partner.entity';
 import { AppUserEntity } from '@modules/user/entities/user.entity';
 import { PartnerService } from '@modules/partner/partner.service';
 import { UserService } from '@modules/user/user.service';
-import { JwtService, JwtSignOptions } from '@nestjs/jwt';
+import { JwtService } from '@nestjs/jwt';
 import { CreateAdminDto } from '@modules/admin/dto/create-admin.dto';
 import { CreateUserDto } from '@modules/user/dto/create-user.dto';
 import { CreatePartnerDto } from '@modules/partner/dto/create-partner.dto';
@@ -21,9 +21,10 @@ type AuthUser =
   | (PartnerUserEntity & { role: 'partner' })
   | (AppUserEntity & { role: 'user' });
 
-interface AppJwtPayloadBase {
+export interface AppJwtPayloadBase {
   sub: string | number;
   role: 'admin' | 'partner' | 'user';
+  email: string;
 }
 
 type AppJwtPayload<T extends object = {}> = AppJwtPayloadBase & T;
@@ -101,6 +102,7 @@ export class AuthService {
     const payload: AppJwtPayload = {
       sub: user.id,
       role: user.role,
+      email: user.email,
     };
     // Generate access token (short-lived)
     const access_token = await this.jwtService.signAsync(payload, {

@@ -8,11 +8,13 @@ import {
   Param,
   Delete,
   UseInterceptors,
+  UseGuards,
 } from '@nestjs/common';
 import { TestUnitService } from './test-unit.service';
 import { CreateTesUnitDto } from './dto/create-tes-unit.dto';
 import { UpdateTesUnitDto } from './dto/update-tes-unit.dto';
-import { CacheInterceptor, CacheKey } from '@nestjs/cache-manager';
+import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
+import { IsAdminGuard } from '@common/guards/is-admin.guard';
 
 // @UseInterceptors(CacheInterceptor)
 @Controller()
@@ -20,6 +22,7 @@ export class TestUnitController {
   constructor(private readonly testUnitService: TestUnitService) {}
 
   @Post()
+  @UseGuards(JwtAuthGuard, IsAdminGuard)
   create(@Body() createTesUnitDto: CreateTesUnitDto) {
     return this.testUnitService.create(createTesUnitDto);
   }

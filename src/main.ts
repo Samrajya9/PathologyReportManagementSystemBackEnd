@@ -2,11 +2,13 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 const os = require('os');
+import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
     cors: { origin: 'http://localhost:5173', credentials: true },
   });
+  app.use(cookieParser()); // 👈 enables req.cookies
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -21,7 +23,7 @@ async function bootstrap() {
 bootstrap();
 
 function getServerIp() {
-  const interfaces = os.networkInterfaces();  
+  const interfaces = os.networkInterfaces();
   for (const name of Object.keys(interfaces)) {
     for (const iface of interfaces[name]) {
       if (iface.family === 'IPv4' && !iface.internal) {
