@@ -9,5 +9,5 @@ export class LoginDto {
   password: string;
 
   @IsIn(['admin', 'partner', 'user'])
-  userType: 'admin' | 'partner' | 'user';
+  role: 'admin' | 'partner' | 'user'; // "role" is more semantic than "userType"
 }

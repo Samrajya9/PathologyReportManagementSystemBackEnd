@@ -13,6 +13,12 @@ export class AdminService {
     private readonly adminRepo: Repository<AdminUserEntity>,
   ) {}
 
+  async create(createAdminDto: CreateAdminDto) {
+    const newAdmin = this.adminRepo.create(createAdminDto);
+    const result = await this.adminRepo.save(newAdmin);
+    return result;
+  }
+
   async findByEmail(email: string) {
     const admin = await this.adminRepo.findOne({ where: { email } });
     if (!admin) {
@@ -21,7 +27,7 @@ export class AdminService {
     return admin;
   }
 
-  async findOne(id: AppBaseEntityIdDataType) {
+  async findById(id: AppBaseEntityIdDataType) {
     const admin = await this.adminRepo.findOne({ where: { id } });
     if (!admin) {
       throw new NotFoundException(`Admin with ID ${id} not found`);

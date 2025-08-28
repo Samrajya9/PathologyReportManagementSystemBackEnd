@@ -11,8 +11,10 @@ export class UserService {
     @InjectRepository(AppUserEntity)
     private readonly userRepo: Repository<AppUserEntity>,
   ) {}
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  async create(createUserDto: CreateUserDto) {
+    const newUser = this.userRepo.create(createUserDto);
+    const result = await this.userRepo.save(newUser);
+    return result;
   }
 
   findAll() {
