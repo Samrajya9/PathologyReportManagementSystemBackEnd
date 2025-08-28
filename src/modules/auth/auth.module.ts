@@ -6,7 +6,7 @@ import { AdminModule } from '@modules/admin/admin.module';
 import { PartnerModule } from '@modules/partner/partner.module';
 import { UserModule } from '@modules/user/user.module';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigService } from '@nestjs/config';
 
 @Module({
   imports: [
@@ -15,7 +15,6 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
     UserModule,
 
     JwtModule.registerAsync({
-      imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
         const config = configService.get<JwtModuleOptions>('jwtConfig');

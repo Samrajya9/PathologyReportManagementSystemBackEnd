@@ -4,7 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { DatabaseConfig, JwtConfig } from './common/config';
+import { CookieConfig, DatabaseConfig, JwtConfig } from './common/config';
 import { DataSourceOptions } from 'typeorm';
 import { APP_INTERCEPTOR, RouterModule } from '@nestjs/core';
 import { CacheModule } from '@nestjs/cache-manager';
@@ -30,7 +30,7 @@ import { AuthModule } from './modules/auth/auth.module';
     ConfigModule.forRoot({
       cache: true,
       isGlobal: true,
-      load: [DatabaseConfig, JwtConfig],
+      load: [DatabaseConfig, JwtConfig, CookieConfig],
       envFilePath: '.env',
     }),
 

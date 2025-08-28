@@ -102,8 +102,17 @@ export class AuthService {
       sub: user.id,
       role: user.role,
     };
-    const access_token = await this.signToken(payload);
-    return { id: user.id, access_token };
+    // Generate access token (short-lived)
+    const access_token = await this.jwtService.signAsync(payload, {
+      expiresIn: '15m', // example: 15 minutes
+    });
+
+    // Generate refresh token (long-lived)
+    const refresh_token = await this.jwtService.signAsync(payload, {
+      expiresIn: '7d', // example: 7 days
+    });
+
+    return { id: user.id, access_token, refresh_token };
   }
 
   async validateUser(loginDto: LoginDto) {
@@ -136,9 +145,9 @@ export class AuthService {
     return user;
   }
 
-  private signToken(payload: AppJwtPayload, options?: JwtSignOptions) {
-    return this.jwtService.signAsync(payload, options);
-  }
+  // private signToken(payload: AppJwtPayload, options?: JwtSignOptions) {
+  //   return this.jwtService.signAsync(payload, options);
+  // }
 
   private async validatePassword(
     plainPassword: string,
