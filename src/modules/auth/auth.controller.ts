@@ -1,6 +1,5 @@
 import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
 import { ResponseMessage } from '@common/decorators/response-message.decorator';
 import { CreateAdminDto } from '@modules/admin/dto/create-admin.dto';
 import { CreateUserDto } from '@modules/user/dto/create-user.dto';
@@ -8,6 +7,7 @@ import { CreatePartnerDto } from '@modules/partner/dto/create-partner.dto';
 import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { LocalAuthGuard } from '@common/guards/local-auth.guard';
+import { AppAuthenticatedUser } from '@common/types/express';
 
 @Controller('auth')
 export class AuthController {
@@ -20,8 +20,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @ResponseMessage('Login successfully')
   async login(@Res({ passthrough: true }) res: Response, @Req() req: Request) {
-    const user = req.user;
-    console.log('logginf user ', user);
+    const user = req.user!; // Non-null assertion, because route is guarded
     const { id, access_token, refresh_token } =
       await this.authService.signIn(user);
     const cookieConfig = this.configService.get('cookieConfig');

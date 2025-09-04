@@ -15,19 +15,14 @@ import { JwtService } from '@nestjs/jwt';
 import { CreateAdminDto } from '@modules/admin/dto/create-admin.dto';
 import { CreateUserDto } from '@modules/user/dto/create-user.dto';
 import { CreatePartnerDto } from '@modules/partner/dto/create-partner.dto';
+import { AppJwtPayload } from '@common/types/jwt.types';
+import { UserRole } from '@common/types/user-role.type';
+import { AppAuthenticatedUser } from '@common/types/express';
 
 type AuthUser =
-  | (AdminUserEntity & { role: 'admin' })
-  | (PartnerUserEntity & { role: 'partner' })
-  | (AppUserEntity & { role: 'user' });
-
-export interface AppJwtPayloadBase {
-  sub: string | number;
-  role: 'admin' | 'partner' | 'user';
-  email: string;
-}
-
-type AppJwtPayload<T extends object = {}> = AppJwtPayloadBase & T;
+  | (AdminUserEntity & { role: UserRole })
+  | (PartnerUserEntity & { role: UserRole })
+  | (AppUserEntity & { role: UserRole });
 
 @Injectable()
 export class AuthService {
@@ -37,27 +32,7 @@ export class AuthService {
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
   ) {}
-
   private bCryptOptions = { saltRounds: 10 };
-
-  private async emailExists(email: string): Promise<boolean> {
-    const results = await Promise.all([
-      this.adminService
-        .findByEmail(email)
-        .then(() => true)
-        .catch(() => false),
-      this.userService
-        .findByEmail(email)
-        .then(() => true)
-        .catch(() => false),
-      this.partnerService
-        .findByEmail(email)
-        .then(() => true)
-        .catch(() => false),
-    ]);
-    // If any of them returned true, the email exists
-    return results.some((exists) => exists === true);
-  }
 
   async registerAdmin(dto: CreateAdminDto) {
     const doesEmailExist = await this.emailExists(dto.email);
@@ -90,9 +65,9 @@ export class AuthService {
 
   async registerPartnerWithCompany() {}
 
-  async signIn(user: any) {
+  async signIn(user: AppAuthenticatedUser) {
     const payload: AppJwtPayload = {
-      sub: user.id,
+      id: user.id,
       role: user.role,
       email: user.email,
     };
@@ -124,7 +99,6 @@ export class AuthService {
       case 'user':
         user = { ...(await this.userService.findByEmail(email)), role: 'user' };
         break;
-
       default:
         throw new UnauthorizedException(`Unsupported user type: ${role}`);
     }
@@ -133,6 +107,24 @@ export class AuthService {
     }
     await this.validatePassword(password, user.password);
     return user;
+  }
+
+  private async emailExists(email: string): Promise<boolean> {
+    const results = await Promise.all([
+      this.adminService
+        .findByEmail(email)
+        .then(() => true)
+        .catch(() => false),
+      this.userService
+        .findByEmail(email)
+        .then(() => true)
+        .catch(() => false),
+      this.partnerService
+        .findByEmail(email)
+        .then(() => true)
+        .catch(() => false),
+    ]);
+    return results.some((exists) => exists === true);
   }
 
   private async validatePassword(

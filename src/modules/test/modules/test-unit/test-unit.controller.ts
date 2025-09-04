@@ -7,7 +7,6 @@ import {
   Patch,
   Param,
   Delete,
-  UseInterceptors,
   UseGuards,
 } from '@nestjs/common';
 import { TestUnitService } from './test-unit.service';

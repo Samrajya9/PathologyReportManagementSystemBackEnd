@@ -1,6 +1,6 @@
 import { AppBaseEntity } from '@common/entity/BaseEntity';
 import { PartnerUserEntity } from '@modules/partner/entities/partner.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToOne } from 'typeorm';
 
 @Entity({ name: 'partner_companies' })
 export class PartnerCompanyEntity extends AppBaseEntity {
@@ -16,9 +16,9 @@ export class PartnerCompanyEntity extends AppBaseEntity {
   @Column({ nullable: true })
   phone?: string;
 
-  @OneToMany(
-    () => PartnerUserEntity,
-    (partnerUser) => partnerUser.partnerCompany,
-  )
-  users: PartnerUserEntity[];
+  @ManyToOne(() => PartnerUserEntity, (user) => user.companies, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  owner: PartnerUserEntity;
 }

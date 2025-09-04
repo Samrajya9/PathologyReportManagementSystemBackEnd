@@ -3,6 +3,7 @@ import { AuthService } from '../auth.service';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy } from 'passport-local';
 import { Request } from 'express';
+import { LoginDto } from '../dto/login.dto';
 
 @Injectable()
 export class LocalStrategy extends PassportStrategy(Strategy) {
@@ -15,13 +16,14 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(req: Request, email: string, password: string) {
-    const role = req.body.role; // 👈 now you can grab role from body
-
-    const user = await this.authService.validateUser({
+    const role = req.body.role;
+    const loginDto: LoginDto = {
       email,
       password,
       role,
-    });
+    };
+
+    const user = await this.authService.validateUser(loginDto);
 
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');

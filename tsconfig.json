@@ -23,5 +23,5 @@
       "@common/*": ["src/common/*"]
     }
   },
-  "include": ["src", "src/types/express.d.ts"]
+  "include": ["src", "src/common/types/express.d.ts"]
 }
