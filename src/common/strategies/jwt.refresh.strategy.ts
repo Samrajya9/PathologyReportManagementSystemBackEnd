@@ -1,14 +1,13 @@
-//src/common/strategies/jwt.strategy.ts
-import { AppAuthenticatedUser } from '@common/types/express';
-import { AppJwtPayload } from '@common/types/jwt.types';
 import { Injectable } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
-import { Request } from 'express';
 import { ExtractJwt, Strategy } from 'passport-jwt';
+import { Request } from 'express';
+import { ConfigService } from '@nestjs/config';
+import { AppJwtPayload } from '@common/types/jwt.types';
+import { AppAuthenticatedUser } from '@common/types/express';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
+export class JwtRefreshStrategy extends PassportStrategy(Strategy, 'refresh') {
   constructor(private readonly configService: ConfigService) {
     const secret = configService.get<string>('JWT_SECRET');
     if (!secret) {
@@ -16,7 +15,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
     }
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        JwtStrategy.extractJWTFromCookie,
+        JwtRefreshStrategy.extractJWTFromCookie,
         ExtractJwt.fromAuthHeaderAsBearerToken(),
       ]),
       ignoreExpiration: false,
@@ -32,10 +31,9 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
       role,
     };
   }
-
   private static extractJWTFromCookie(req: Request): string | null {
-    if (req.cookies?.accessToken) {
-      return req.cookies.accessToken;
+    if (req.cookies?.refreshToken) {
+      return req.cookies.refreshToken;
     }
     return null;
   }

@@ -16,6 +16,7 @@ import { LocalStrategy } from './strategies/local.strategy';
     AdminModule,
     PartnerModule,
     UserModule,
+
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {

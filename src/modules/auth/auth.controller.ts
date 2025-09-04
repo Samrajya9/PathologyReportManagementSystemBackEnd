@@ -7,7 +7,7 @@ import { CreatePartnerDto } from '@modules/partner/dto/create-partner.dto';
 import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { LocalAuthGuard } from '@common/guards/local-auth.guard';
-import { AppAuthenticatedUser } from '@common/types/express';
+import { JwtRefreshGaurd } from '@common/guards/jwt-refresh.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -29,6 +29,21 @@ export class AuthController {
     return { id };
   }
 
+  @Post('refresh')
+  @UseGuards(JwtRefreshGaurd)
+  @ResponseMessage('Access token refreshed')
+  async refreshAccessToken(
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const user = req.user!;
+    const { id, access_token } =
+      await this.authService.generateAccessToken(user);
+    const cookieConfig = this.configService.get('cookieConfig');
+    res.cookie('accessToken', access_token, cookieConfig.accessToken);
+    return { id };
+  }
+
   @Post('register/admin')
   @ResponseMessage('Admin registered successfully')
   adminRegister(@Body() createAdminDto: CreateAdminDto) {
@@ -41,13 +56,7 @@ export class AuthController {
     return this.authService.registerUser(createUserDto);
   }
 
-  //Partner admin creating a new user
   @Post('register/partner')
   @ResponseMessage('Partner registered successfully')
   partnerRegister(@Body() createPartnerDto: CreatePartnerDto) {}
-
-  //First-time partner signup
-  @Post('register/partner-with-company')
-  @ResponseMessage('Partner registered successfully')
-  partnerWithCompanyRegister(@Body() createPartnerDto: CreatePartnerDto) {}
 }

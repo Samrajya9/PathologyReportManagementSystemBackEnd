@@ -34,6 +34,14 @@ export class AuthService {
   ) {}
   private bCryptOptions = { saltRounds: 10 };
 
+  private accessTokenConfig = {
+    expiresIn: '15m',
+  };
+
+  private refreshTokenConfig = {
+    expiresIn: '7d',
+  };
+
   async registerAdmin(dto: CreateAdminDto) {
     const doesEmailExist = await this.emailExists(dto.email);
     if (doesEmailExist) {
@@ -65,18 +73,34 @@ export class AuthService {
 
   async registerPartnerWithCompany() {}
 
+  async generateAccessToken(user: AppAuthenticatedUser) {
+    const payload: AppJwtPayload = {
+      id: user.id,
+      role: user.role,
+      email: user.email,
+    };
+    const access_token = await this.jwtService.signAsync(
+      payload,
+      this.accessTokenConfig,
+    );
+
+    return { id: user.id, access_token };
+  }
+
   async signIn(user: AppAuthenticatedUser) {
     const payload: AppJwtPayload = {
       id: user.id,
       role: user.role,
       email: user.email,
     };
-    const access_token = await this.jwtService.signAsync(payload, {
-      expiresIn: '15m',
-    });
-    const refresh_token = await this.jwtService.signAsync(payload, {
-      expiresIn: '7d',
-    });
+    const access_token = await this.jwtService.signAsync(
+      payload,
+      this.accessTokenConfig,
+    );
+    const refresh_token = await this.jwtService.signAsync(
+      payload,
+      this.refreshTokenConfig,
+    );
     return { id: user.id, access_token, refresh_token };
   }
 
@@ -106,7 +130,12 @@ export class AuthService {
       throw new UnauthorizedException(`${role} with email ${email} not found`);
     }
     await this.validatePassword(password, user.password);
-    return user;
+    const authenicatedUser: AppAuthenticatedUser = {
+      id: user.id,
+      email: user.email,
+      role: user.role,
+    };
+    return authenicatedUser;
   }
 
   private async emailExists(email: string): Promise<boolean> {
