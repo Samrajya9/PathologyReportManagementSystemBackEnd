@@ -7,7 +7,6 @@ import { PartnerModule } from '@modules/partner/partner.module';
 import { UserModule } from '@modules/user/user.module';
 import { JwtModule, JwtModuleOptions } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
-import { PassportModule } from '@nestjs/passport';
 import { JwtStrategy } from '@common/strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
 
@@ -16,11 +15,10 @@ import { LocalStrategy } from './strategies/local.strategy';
     AdminModule,
     PartnerModule,
     UserModule,
-
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
-        const config = configService.get<JwtModuleOptions>('jwtConfig');
+        const config = configService.get<JwtModuleOptions>('jwtConfig.refresh');
         if (!config) {
           throw new Error('Jwt config not found');
         }

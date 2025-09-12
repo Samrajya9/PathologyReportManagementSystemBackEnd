@@ -59,4 +59,12 @@ export class AuthController {
   @Post('register/partner')
   @ResponseMessage('Partner registered successfully')
   partnerRegister(@Body() createPartnerDto: CreatePartnerDto) {}
+
+  @Post('logout')
+  @ResponseMessage('Logged out successfully')
+  logout(@Res({ passthrough: true }) res: Response) {
+    res.clearCookie('accessToken');
+    res.clearCookie('refreshToken');
+    return { success: true };
+  }
 }

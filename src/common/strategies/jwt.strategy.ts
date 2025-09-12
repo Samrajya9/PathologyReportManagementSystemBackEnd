@@ -10,9 +10,9 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 @Injectable()
 export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private readonly configService: ConfigService) {
-    const secret = configService.get<string>('JWT_SECRET');
+    const secret = configService.get<string>('jwtConfig.access.secret');
     if (!secret) {
-      throw new Error('JWT_SECRET is not defined in environment');
+      throw new Error('JWT_ACCESS_SECRET is not defined in environment');
     }
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([

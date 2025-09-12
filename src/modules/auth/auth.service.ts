@@ -11,13 +11,14 @@ import { PartnerUserEntity } from '@modules/partner/entities/partner.entity';
 import { AppUserEntity } from '@modules/user/entities/user.entity';
 import { PartnerService } from '@modules/partner/partner.service';
 import { UserService } from '@modules/user/user.service';
-import { JwtService } from '@nestjs/jwt';
+import { JwtService, JwtSignOptions } from '@nestjs/jwt';
 import { CreateAdminDto } from '@modules/admin/dto/create-admin.dto';
 import { CreateUserDto } from '@modules/user/dto/create-user.dto';
 import { CreatePartnerDto } from '@modules/partner/dto/create-partner.dto';
 import { AppJwtPayload } from '@common/types/jwt.types';
 import { UserRole } from '@common/types/user-role.type';
 import { AppAuthenticatedUser } from '@common/types/express';
+import { ConfigService } from '@nestjs/config';
 
 type AuthUser =
   | (AdminUserEntity & { role: UserRole })
@@ -31,16 +32,9 @@ export class AuthService {
     private readonly partnerService: PartnerService,
     private readonly userService: UserService,
     private readonly jwtService: JwtService,
+    private readonly configService: ConfigService,
   ) {}
   private bCryptOptions = { saltRounds: 10 };
-
-  private accessTokenConfig = {
-    expiresIn: '15m',
-  };
-
-  private refreshTokenConfig = {
-    expiresIn: '7d',
-  };
 
   async registerAdmin(dto: CreateAdminDto) {
     const doesEmailExist = await this.emailExists(dto.email);
@@ -79,10 +73,9 @@ export class AuthService {
       role: user.role,
       email: user.email,
     };
-    const access_token = await this.jwtService.signAsync(
-      payload,
-      this.accessTokenConfig,
-    );
+    const accessConfig =
+      this.configService.get<JwtSignOptions>('jwtConfig.access');
+    const access_token = await this.jwtService.signAsync(payload, accessConfig);
 
     return { id: user.id, access_token };
   }
@@ -93,13 +86,16 @@ export class AuthService {
       role: user.role,
       email: user.email,
     };
-    const access_token = await this.jwtService.signAsync(
-      payload,
-      this.accessTokenConfig,
-    );
+
+    const accessConfig =
+      this.configService.get<JwtSignOptions>('jwtConfig.access');
+    const refreshConfig =
+      this.configService.get<JwtSignOptions>('jwtConfig.refresh');
+
+    const access_token = await this.jwtService.signAsync(payload, accessConfig);
     const refresh_token = await this.jwtService.signAsync(
       payload,
-      this.refreshTokenConfig,
+      refreshConfig,
     );
     return { id: user.id, access_token, refresh_token };
   }
@@ -109,19 +105,25 @@ export class AuthService {
     let user: AuthUser | null = null;
     switch (role) {
       case 'admin':
+        const a = await this.adminService.findByEmail(email);
+        if (!a) throw new UnauthorizedException('');
         user = {
-          ...(await this.adminService.findByEmail(email)),
+          ...a,
           role: 'admin',
         };
         break;
       case 'partner':
+        const p = await this.partnerService.findByEmail(email);
+        if (!p) throw new UnauthorizedException('');
         user = {
-          ...(await this.partnerService.findByEmail(email)),
+          ...p,
           role: 'partner',
         };
         break;
       case 'user':
-        user = { ...(await this.userService.findByEmail(email)), role: 'user' };
+        const u = await this.userService.findByEmail(email);
+        if (!u) throw new UnauthorizedException('');
+        user = { ...u, role: 'user' };
         break;
       default:
         throw new UnauthorizedException(`Unsupported user type: ${role}`);
@@ -130,6 +132,7 @@ export class AuthService {
       throw new UnauthorizedException(`${role} with email ${email} not found`);
     }
     await this.validatePassword(password, user.password);
+
     const authenicatedUser: AppAuthenticatedUser = {
       id: user.id,
       email: user.email,

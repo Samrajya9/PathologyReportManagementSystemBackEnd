@@ -11,7 +11,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
     super({
       usernameField: 'email',
       passwordField: 'password',
-      passReqToCallback: true, // 👈 enables request injection
+      passReqToCallback: true,
     });
   }
 

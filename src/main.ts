@@ -5,8 +5,10 @@ const os = require('os');
 import * as cookieParser from 'cookie-parser';
 
 async function bootstrap() {
+  const frontendUrl = process.env.FRONTEND_URL!;
+  const app_Port = process.env.APP_PORT!;
   const app = await NestFactory.create(AppModule, {
-    cors: { origin: 'http://localhost:5173', credentials: true },
+    cors: { origin: frontendUrl, credentials: true },
   });
   app.use(cookieParser()); // 👈 enables req.cookies
 
@@ -18,7 +20,9 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(3000, '0.0.0.0', () => console.log(`${getServerIp()}:3000`)); // 👈 bind to all interfaces (localhost + LAN)
+  await app.listen(app_Port, '0.0.0.0', () =>
+    console.log(`${getServerIp()}:3000`),
+  ); // 👈 bind to all interfaces (localhost + LAN)
 }
 bootstrap();
 
