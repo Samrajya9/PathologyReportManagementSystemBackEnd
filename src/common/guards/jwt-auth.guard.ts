@@ -1,6 +1,4 @@
 //src/common/guards/jwt-auth.guard.ts
-
-import { AppAuthenticatedUser } from '@common/types/express';
 import {
   ExecutionContext,
   Injectable,
@@ -21,12 +19,12 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
   ) {
     // If JWT validation error occurs
     if (err || !user) {
-      if (info instanceof TokenExpiredError) {
-        // JWT is expired
-        throw new UnauthorizedException('access_token expired');
-      }
+      // if (info instanceof TokenExpiredError) {
+      //   // JWT is expired
+      //   throw new UnauthorizedException('access_token expired');
+      // }
       // Any other invalid token error
-      throw err || new UnauthorizedException('Invalid or missing token.');
+      throw new UnauthorizedException('Invalid access_token.');
     }
     // If JWT is valid
     return user;

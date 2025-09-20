@@ -1,4 +1,12 @@
-import { Body, Controller, Post, Req, Res, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
 import { ResponseMessage } from '@common/decorators/response-message.decorator';
 import { CreateAdminDto } from '@modules/admin/dto/create-admin.dto';
@@ -8,6 +16,7 @@ import { Request, Response } from 'express';
 import { ConfigService } from '@nestjs/config';
 import { LocalAuthGuard } from '@common/guards/local-auth.guard';
 import { JwtRefreshGaurd } from '@common/guards/jwt-refresh.guard';
+import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -27,6 +36,16 @@ export class AuthController {
     res.cookie('refreshToken', refresh_token, cookieConfig.refreshToken);
     res.cookie('accessToken', access_token, cookieConfig.accessToken);
     return { id };
+  }
+
+  @Get('me')
+  @UseGuards(JwtAuthGuard)
+  async me(@Req() req: Request) {
+    const user = req.user;
+    if (!user) {
+      return false;
+    }
+    return true;
   }
 
   @Post('refresh')

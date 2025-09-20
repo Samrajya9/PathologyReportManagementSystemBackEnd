@@ -18,7 +18,7 @@ import { LocalStrategy } from './strategies/local.strategy';
     JwtModule.registerAsync({
       inject: [ConfigService],
       useFactory: async (configService: ConfigService) => {
-        const config = configService.get<JwtModuleOptions>('jwtConfig.refresh');
+        const config = configService.get<JwtModuleOptions>('jwtConfig.access');
         if (!config) {
           throw new Error('Jwt config not found');
         }
