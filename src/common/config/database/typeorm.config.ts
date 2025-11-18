@@ -12,5 +12,6 @@ export default registerAs('databaseConfig', (): DataSourceOptions => {
     database: process.env.POSTGRES_DB,
     entities: ['dist/**/*.entity{.ts,.js}'],
     synchronize: process.env.NODE_ENV === 'development',
+    // synchronize: true,
   };
 });

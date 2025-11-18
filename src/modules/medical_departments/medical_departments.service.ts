@@ -3,7 +3,7 @@ import { CreateDepartmentDto } from './dto/create-medical_department.dto';
 import { UpdateMedicalDepartmentDto } from './dto/update-medical_department.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MedicalDepartmentEntity } from './entities/medical_department.entity';
-import { Repository } from 'typeorm';
+import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
 import { AppBaseEntityIdDataType } from '@common/entity/BaseEntity';
 
 @Injectable()
@@ -13,6 +13,14 @@ export class MedicalDepartmentsService {
     private readonly medicalDepRepo: Repository<MedicalDepartmentEntity>,
   ) {}
 
+  private readonly findAllOptions: FindManyOptions<MedicalDepartmentEntity> = {
+    order: { id: 'desc' },
+  };
+
+  private readonly findOneOptions: FindOneOptions<MedicalDepartmentEntity> = {
+    relations: [],
+  };
+
   async create(createDepartDto: CreateDepartmentDto) {
     const newDepartment = this.medicalDepRepo.create(createDepartDto);
     const result = await this.medicalDepRepo.save(newDepartment);
@@ -20,12 +28,13 @@ export class MedicalDepartmentsService {
   }
 
   async findAll() {
-    return await this.medicalDepRepo.find();
+    return await this.medicalDepRepo.find(this.findAllOptions);
   }
 
   async findOne(id: AppBaseEntityIdDataType) {
     const medicalDep = await this.medicalDepRepo.findOne({
       where: { id },
+      ...this.findOneOptions,
     });
     if (!medicalDep) {
       throw new NotFoundException('Medical Department not found');

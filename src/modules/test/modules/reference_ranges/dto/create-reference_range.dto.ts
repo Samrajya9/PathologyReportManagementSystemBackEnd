@@ -45,12 +45,12 @@ export class CreateReferenceRangeDto {
 
   @IsNotEmpty()
   @IsNumberString()
-  @Min(0, { message: 'age_min_years must be >= 0' })
+  // @Min(0, { message: 'age_min_years must be >= 0' })
   age_min_years: string;
 
   @IsNotEmpty()
   @IsNumberString()
-  @Min(0, { message: 'age_max_years must be >= 0' })
+  // @Min(0, { message: 'age_max_years must be >= 0' })
   age_max_years: string;
 
   @IsNumberString()

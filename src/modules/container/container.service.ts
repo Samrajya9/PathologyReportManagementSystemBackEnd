@@ -7,7 +7,12 @@ import { CreateContainerDto } from './dto/create-container.dto';
 import { UpdateContainerDto } from './dto/update-container.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { ContainerEntity } from './entities/container.entity';
-import { EntityManager, Repository } from 'typeorm';
+import {
+  EntityManager,
+  FindManyOptions,
+  FindOneOptions,
+  Repository,
+} from 'typeorm';
 
 @Injectable()
 export class ContainerService {
@@ -15,6 +20,14 @@ export class ContainerService {
     @InjectRepository(ContainerEntity)
     private readonly containerRepo: Repository<ContainerEntity>,
   ) {}
+
+  private readonly findAllOptions: FindManyOptions<ContainerEntity> = {
+    order: { id: 'desc' },
+  };
+
+  private readonly findOneOptions: FindOneOptions<ContainerEntity> = {
+    relations: [],
+  };
   async create(createContainerDto: CreateContainerDto) {
     const newContainer = this.containerRepo.create(createContainerDto);
     const result = await this.containerRepo.save(newContainer);
@@ -22,11 +35,14 @@ export class ContainerService {
   }
 
   async findAll() {
-    return this.containerRepo.find();
+    return this.containerRepo.find(this.findAllOptions);
   }
 
   async findOne(id: number) {
-    const container = await this.containerRepo.findOne({ where: { id } });
+    const container = await this.containerRepo.findOne({
+      where: { id },
+      ...this.findOneOptions,
+    });
     if (!container)
       throw new NotFoundException(`Container with Id ${id} not found`);
     return container;
