@@ -55,4 +55,8 @@ export class TestSpecimenContainerService {
   remove(id: number) {
     return `This action removes a #${id} testSpecimenContainer`;
   }
+
+  removeByTestId(testId: number) {
+    return this.tscRepo.delete({ test: { id: testId } });
+  }
 }

@@ -75,4 +75,8 @@ export class ReferenceRangesService {
   async remove(id: number) {
     return await this.refRangeRepo.delete({ id });
   }
+
+  async removeByTestId(testId: number) {
+    return this.refRangeRepo.delete({ test: { id: testId } });
+  }
 }

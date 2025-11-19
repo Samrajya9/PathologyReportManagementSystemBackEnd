@@ -51,4 +51,8 @@ export class ResultValueOptionsService {
   remove(id: number) {
     return `This action removes a #${id} resultValueOption`;
   }
+
+  async removeByTestId(testId: number) {
+    return this.resultValueOptionRepo.delete({ test: { id: testId } });
+  }
 }

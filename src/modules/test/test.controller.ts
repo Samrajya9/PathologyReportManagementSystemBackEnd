@@ -34,7 +34,7 @@ export class TestController {
   @ResponseMessage('Successfully fetched tests')
   findAll(@Query('page') page?: string, @Query('limit') limit?: string) {
     const pageNumber = page ? Number(page) : 1;
-    const limitNumber = limit ? Number(limit) : 5;
+    const limitNumber = limit ? Number(limit) : 10;
     return this.testService.findAllTest(pageNumber, limitNumber);
   }
 

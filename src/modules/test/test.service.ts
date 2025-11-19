@@ -217,6 +217,11 @@ export class TestService {
   }
 
   async removeTest(id: number) {
+    const [tSC, refRange, rVO] = await Promise.all([
+      this.tSCService.removeByTestId(id),
+      this.refRangeService.removeByTestId(id),
+      this.rVOService.removeByTestId(id),
+    ]);
     return this.testRepo.delete({ id });
   }
 
