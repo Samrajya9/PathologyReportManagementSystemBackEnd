@@ -6,8 +6,13 @@ import { ResultValueTypesModule } from '@modules/test/modules/result_value_types
 import { TestUnitModule } from '@modules/test/modules/test-unit/test-unit.module';
 import { PanelsModule } from '@modules/panels/panels.module';
 import { TestModule } from '@modules/test/test.module';
+import { TestOrdersModule } from '@modules/test_orders/test_orders.module';
 
 export const AppRoutes: Routes = [
+  {
+    path: 'test-orders',
+    module: TestOrdersModule,
+  },
   {
     path: 'test-result-value-types',
     module: ResultValueTypesModule,

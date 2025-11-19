@@ -11,7 +11,7 @@ import { PanelTestsService } from './panel_tests.service';
 import { CreatePanelTestDto } from './dto/create-panel_test.dto';
 import { UpdatePanelTestDto } from './dto/update-panel_test.dto';
 
-@Controller() // Relative to parent route
+@Controller('panel_tests') // Relative to parent route
 export class PanelTestsController {
   constructor(private readonly panelTestsService: PanelTestsService) {}
 

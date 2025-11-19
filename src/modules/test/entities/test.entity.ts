@@ -38,7 +38,7 @@ export class TestEntity extends AppBaseEntity {
   @ManyToOne(() => MedicalDepartmentEntity, { eager: true })
   medicalDepartment: MedicalDepartmentEntity;
 
-  @OneToMany(() => ReferenceRangeEntity, (range) => range.test)
+  @OneToMany(() => ReferenceRangeEntity, (range) => range.test, { eager: true })
   referenceRanges: ReferenceRangeEntity[];
 
   @OneToMany(() => ResultValueOptionEntity, (rvo) => rvo.test, {

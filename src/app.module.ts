@@ -22,6 +22,9 @@ import { PartnerCompanyModule } from './modules/partner-company/partner-company.
 import { UserModule } from './modules/user/user.module';
 import { AdminModule } from '@modules/admin/admin.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { TestResultModule } from './modules/test-result/test-result.module';
+import { TestOrdersModule } from './modules/test_orders/test_orders.module';
+import { OrderTestsModule } from './modules/order_tests/order_tests.module';
 
 @Module({
   imports: [
@@ -65,6 +68,9 @@ import { AuthModule } from './modules/auth/auth.module';
     PartnerCompanyModule,
     UserModule,
     AuthModule,
+    TestResultModule,
+    TestOrdersModule,
+    OrderTestsModule,
   ],
 
   controllers: [AppController],
