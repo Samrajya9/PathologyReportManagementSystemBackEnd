@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Get,
+  Param,
   Post,
   Req,
   Res,
@@ -17,6 +18,7 @@ import { ConfigService } from '@nestjs/config';
 import { LocalAuthGuard } from '@common/guards/local-auth.guard';
 import { JwtRefreshGaurd } from '@common/guards/jwt-refresh.guard';
 import { JwtAuthGuard } from '@common/guards/jwt-auth.guard';
+import { RoleValidationPipe } from '@common/pipes/role-validation.pipe';
 
 @Controller('auth')
 export class AuthController {
@@ -25,10 +27,15 @@ export class AuthController {
     private readonly configService: ConfigService,
   ) {}
 
-  @Post('login')
+  @Post('login/:role')
   @UseGuards(LocalAuthGuard)
   @ResponseMessage('Login successfully')
-  async login(@Res({ passthrough: true }) res: Response, @Req() req: Request) {
+  async login(
+    // Pipes applied directly to the parameter are evaluated before Guards
+    @Param('role', new RoleValidationPipe()) role: 'admin' | 'partner' | 'user',
+    @Res({ passthrough: true }) res: Response,
+    @Req() req: Request,
+  ) {
     const user = req.user!; // Non-null assertion, because route is guarded
     const { id, access_token, refresh_token } =
       await this.authService.signIn(user);

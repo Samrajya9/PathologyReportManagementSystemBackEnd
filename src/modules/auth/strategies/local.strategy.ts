@@ -6,7 +6,7 @@ import { Request } from 'express';
 import { LoginDto } from '../dto/login.dto';
 
 @Injectable()
-export class LocalStrategy extends PassportStrategy(Strategy) {
+export class LocalStrategy extends PassportStrategy(Strategy, 'local') {
   constructor(private authService: AuthService) {
     super({
       usernameField: 'email',
@@ -16,15 +16,13 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(req: Request, email: string, password: string) {
-    const role = req.body.role;
+    const role = req.params.role as LoginDto['role'];
     const loginDto: LoginDto = {
       email,
       password,
       role,
     };
-
     const user = await this.authService.validateUser(loginDto);
-
     if (!user) {
       throw new UnauthorizedException('Invalid credentials');
     }

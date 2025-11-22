@@ -4,19 +4,16 @@ import { Column, Entity } from 'typeorm';
 
 @Entity({ name: 'users' })
 export class AppUserEntity extends AppBaseUserEntity {
-  @Column({ nullable: true })
-  fullName: string;
-
-  @Column({ type: 'date', nullable: true })
-  dateOfBirth: Date;
-
-  @Column({
-    type: 'enum',
-    enum: GenderEnum,
-    nullable: true,
-  })
-  gender: GenderEnum;
-
-  @Column({ nullable: true })
-  phone: string;
+  // @Column({ nullable: true })
+  // fullName: string;
+  // @Column({ type: 'date', nullable: true })
+  // dateOfBirth: Date;
+  // @Column({
+  //   type: 'enum',
+  //   enum: GenderEnum,
+  //   nullable: true,
+  // })
+  // gender: GenderEnum;
+  // @Column({ nullable: true })
+  // phone: string;
 }
